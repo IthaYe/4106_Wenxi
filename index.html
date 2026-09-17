@@ -1,14 +1,597 @@
 <html>
-  <head>
-    <script src="https://aframe.io/releases/1.8.0/aframe.min.js"></script>
-  </head>
-  <body>
-<a-scene>
-  <a-assets>
-    <a-asset-item id="my_corridor" src="wenxi01.glb"></a-asset-item>
-  </a-assets>
 
-  <a-entity gltf-model="#my_corridor"></a-entity>
-</a-scene>
-  </body>
+<head>
+
+  <!-- A-Frame -->
+  <script src="https://aframe.io/releases/1.8.0/aframe.min.js"></script>
+
+
+  <script>
+
+    /* ========================================
+       FOOD INTERACTION
+       ======================================== */
+
+    AFRAME.registerComponent('food-info', {
+
+      init: function () {
+
+        this.el.addEventListener('click', function () {
+
+          // 显示商品介绍
+          document
+            .querySelector('#food-panel')
+            .setAttribute('visible', true);
+
+
+          // 隐藏开始提示
+          document
+            .querySelector('#instruction')
+            .setAttribute('visible', false);
+
+
+          // 显示 HTML CLOSE 按钮
+          document
+            .querySelector('#closeButton')
+            .style.display = 'block';
+
+        });
+
+      }
+
+    });
+
+
+    /* ========================================
+       CLOSE FOOD PANEL
+       ======================================== */
+
+    function closeFoodPanel() {
+
+      // 隐藏商品介绍
+      document
+        .querySelector('#food-panel')
+        .setAttribute('visible', false);
+
+
+      // 隐藏 CLOSE 按钮
+      document
+        .querySelector('#closeButton')
+        .style.display = 'none';
+
+    }
+
+  </script>
+
+
+
+  <script>
+
+    /* ========================================
+       SIMPLE COLLISION
+       你原来的 collision 代码
+       ======================================== */
+
+    AFRAME.registerComponent('simple-collision', {
+
+      init: function () {
+
+        this.lastPosition = new THREE.Vector3();
+
+
+        const camera =
+          this.el.querySelector('[camera]');
+
+
+        if (camera) {
+
+          this.lastPosition.copy(
+            camera.object3D.position
+          );
+
+        }
+
+      },
+
+
+      tick: function () {
+
+        const player = this.el;
+
+
+        const camera =
+          player.querySelector('[camera]');
+
+
+        if (!camera) return;
+
+
+
+        // Camera 在 player 内部的位置
+
+        const cameraPosition =
+          camera.object3D.position;
+
+
+
+        // Camera 在整个场景中的实际位置
+
+        const worldPosition =
+          new THREE.Vector3();
+
+
+        camera.object3D.getWorldPosition(
+          worldPosition
+        );
+
+
+
+        // 找到所有 collision box
+
+        const walls =
+          document.querySelectorAll(
+            '.collision-box'
+          );
+
+
+        let collided = false;
+
+
+
+        walls.forEach(function (wall) {
+
+
+          // 根据墙的位置和大小建立碰撞范围
+
+          const box =
+            new THREE.Box3()
+              .setFromObject(
+                wall.object3D
+              );
+
+
+
+          // 检测 X 和 Z
+
+          if (
+
+            worldPosition.x > box.min.x &&
+
+            worldPosition.x < box.max.x &&
+
+            worldPosition.z > box.min.z &&
+
+            worldPosition.z < box.max.z
+
+          ) {
+
+            collided = true;
+
+          }
+
+        });
+
+
+
+        // 撞墙 → 回到之前的位置
+
+        if (collided) {
+
+          cameraPosition.copy(
+            this.lastPosition
+          );
+
+        }
+
+
+        else {
+
+          // 没撞墙 → 记录当前位置
+
+          this.lastPosition.copy(
+            cameraPosition
+          );
+
+        }
+
+      }
+
+    });
+
+  </script>
+
+
+</head>
+
+
+
+<body style="margin:0;">
+
+
+  <!-- ========================================
+       REAL HTML CLOSE BUTTON
+       这个按钮不属于 A-Frame
+       所以鼠标可以直接点击
+       ======================================== -->
+
+
+  <button
+
+    id="closeButton"
+
+    onclick="closeFoodPanel()"
+
+    style="
+
+      display:none;
+
+      position:fixed;
+
+      left:50%;
+
+      bottom:18%;
+
+      transform:translateX(-50%);
+
+      z-index:99999;
+
+      padding:12px 35px;
+
+      font-size:20px;
+
+      font-family:Arial, sans-serif;
+
+      color:#ff7777;
+
+      background:#444444;
+
+      border:none;
+
+      border-radius:5px;
+
+      cursor:pointer;
+
+    ">
+
+    CLOSE
+
+  </button>
+
+
+
+  <!-- ========================================
+       A-FRAME SCENE
+       ======================================== -->
+
+
+  <a-scene background="color: #1a1a1a">
+
+
+
+    <!-- =====================================
+         ASSETS
+         ===================================== -->
+
+
+    <a-assets>
+
+
+      <a-asset-item
+
+        id="my_corridor"
+
+        src="snack.glb">
+
+      </a-asset-item>
+
+
+    </a-assets>
+
+
+
+    <!-- =====================================
+         SUPERMARKET MODEL
+         ===================================== -->
+
+
+    <a-entity
+
+      gltf-model="#my_corridor">
+
+    </a-entity>
+
+
+
+    <!-- =====================================
+         COLLISION WALLS
+
+         下面全部保持你原来的数据
+         ===================================== -->
+
+
+
+    <!-- 1. 货架正面的碰撞墙 -->
+
+
+    <a-box
+
+      class="collision-box"
+
+      position="0 1.8 0.8"
+
+      width="3.2"
+
+      height="2.2"
+
+      depth="0.15"
+
+      color="red"
+
+      opacity="0">
+
+    </a-box>
+
+
+
+    <!-- 2. 左边碰撞墙 -->
+
+
+    <a-box
+
+      class="collision-box"
+
+      position="-1.7 1.2 1.8"
+
+      width="0.15"
+
+      height="2.2"
+
+      depth="3.2"
+
+      color="blue"
+
+      opacity="0">
+
+    </a-box>
+
+
+
+    <!-- 3. 右边碰撞墙 -->
+
+
+    <a-box
+
+      class="collision-box"
+
+      position="1.7 1.2 1.8"
+
+      width="0.15"
+
+      height="2.2"
+
+      depth="3.2"
+
+      color="blue"
+
+      opacity="0">
+
+    </a-box>
+
+
+
+    <!-- =====================================
+         PINK POPCORN CLICK AREA
+
+         对应你图片里的两袋
+         LesserEvil 粉色爆米花
+         ===================================== -->
+
+
+    <a-box
+
+      id="pink-popcorn"
+
+      class="food-clickable"
+
+      position="0 1.65 0.95"
+
+      width="0.65"
+
+      height="0.55"
+
+      depth="0.1"
+
+      material="
+        color: yellow;
+        opacity: 0;
+        transparent: true"
+
+      food-info>
+
+    </a-box>
+
+
+
+    <!-- =====================================
+         PLAYER
+
+         原来的位置保持不变
+         ===================================== -->
+
+
+    <a-entity
+
+      id="player"
+
+      position="0 0 5"
+
+      simple-collision>
+
+
+
+      <!-- CAMERA -->
+
+
+      <a-camera
+
+        position="0 1.6 0"
+
+        wasd-controls="acceleration: 10">
+
+
+
+        <!-- =================================
+             SCREEN CENTER CURSOR
+             ================================= -->
+
+
+        <a-cursor
+
+          color="white"
+
+          raycaster="objects: .food-clickable">
+
+        </a-cursor>
+
+
+
+        <!-- =================================
+             START INSTRUCTION
+             ================================= -->
+
+
+        <a-entity
+
+          id="instruction"
+
+          position="0 0.55 -1.5">
+
+
+
+          <!-- Background -->
+
+
+          <a-plane
+
+            width="2.5"
+
+            height="0.34"
+
+            color="#111111"
+
+            opacity="0.8">
+
+          </a-plane>
+
+
+
+          <!-- Instruction -->
+
+
+          <a-text
+
+            value="Click the pink popcorn package"
+
+            position="0 0 0.01"
+
+            align="center"
+
+            width="2.1"
+
+            color="white">
+
+          </a-text>
+
+
+        </a-entity>
+
+
+
+        <!-- =================================
+             FOOD INFORMATION
+             ================================= -->
+
+
+        <a-entity
+
+          id="food-panel"
+
+          position="0 0 -1.3"
+
+          visible="false">
+
+
+
+          <!-- Black background -->
+
+
+          <a-plane
+
+            width="2.4"
+
+            height="1.25"
+
+            color="#111111"
+
+            opacity="0.94">
+
+          </a-plane>
+
+
+
+          <!-- Product Name -->
+
+
+          <a-text
+
+            value="LesserEvil Himalayan Pink Salt Popcorn"
+
+            position="0 0.35 0.02"
+
+            align="center"
+
+            width="1.9"
+
+            color="white">
+
+          </a-text>
+
+
+
+          <!-- Product Information -->
+
+
+          <a-text
+
+            value="This popcorn is made with organic popcorn, coconut oil, and Himalayan pink salt. It has a light, crunchy texture and a simple salty flavor."
+
+            position="0 -0.05 0.02"
+
+            align="center"
+
+            width="1.8"
+
+            wrap-count="38"
+
+            color="white">
+
+          </a-text>
+
+
+        </a-entity>
+
+
+      </a-camera>
+
+
+    </a-entity>
+
+
+
+  </a-scene>
+
+
+</body>
+
+
 </html>
