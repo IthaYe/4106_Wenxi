@@ -1,202 +1,691 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
 
-  <!-- A-Frame -->
+  <meta charset="UTF-8">
+  <title>Snack Store Interaction</title>
+
   <script src="https://aframe.io/releases/1.8.0/aframe.min.js"></script>
+
+  <style>
+
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+
+    /* =========================================
+       START INSTRUCTION
+       ========================================= */
+
+    #instruction {
+      position: fixed;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+
+      background: rgba(0, 0, 0, 0.72);
+      color: white;
+
+      padding: 12px 24px;
+      border-radius: 6px;
+
+      font-size: 20px;
+
+      pointer-events: none;
+    }
+
+
+    /* =========================================
+       DARK BACKGROUND
+       ========================================= */
+
+    #foodOverlay {
+      display: none;
+
+      position: fixed;
+      inset: 0;
+
+      z-index: 99999;
+
+      background: rgba(0, 0, 0, 0.65);
+
+      align-items: center;
+      justify-content: center;
+    }
+
+
+    /* =========================================
+       MAIN INFORMATION CARD
+       ========================================= */
+
+    #foodCard {
+      width: min(900px, 85vw);
+      max-height: 85vh;
+
+      overflow-y: auto;
+
+      box-sizing: border-box;
+
+      background: rgba(24, 24, 24, 0.98);
+
+      color: white;
+
+      padding: 35px 45px;
+
+      border-radius: 14px;
+
+      box-shadow:
+        0 12px 40px
+        rgba(0, 0, 0, 0.6);
+    }
+
+
+    /* =========================================
+       TITLE
+       ========================================= */
+
+    #foodCard h1 {
+      text-align: center;
+
+      margin:
+        0 0 8px 0;
+
+      font-size: 30px;
+
+      font-weight: 500;
+    }
+
+
+    .subtitle {
+      text-align: center;
+
+      color: #bbbbbb;
+
+      font-size: 16px;
+
+      margin-bottom: 28px;
+    }
+
+
+    /* =========================================
+       TOP PRODUCT SECTION
+       ========================================= */
+
+    .product-section {
+      display: flex;
+
+      align-items: center;
+
+      gap: 35px;
+
+      margin-bottom: 30px;
+    }
+
+
+    .product-image {
+      width: 310px;
+      height: 210px;
+
+      object-fit: cover;
+
+      border-radius: 10px;
+
+      flex-shrink: 0;
+    }
+
+
+    .product-description {
+      flex: 1;
+    }
+
+
+    .product-description h2 {
+      font-size: 21px;
+
+      margin:
+        0 0 12px 0;
+
+      font-weight: 500;
+    }
+
+
+    .product-description p {
+      margin: 0;
+
+      color: #dddddd;
+
+      font-size: 17px;
+
+      line-height: 1.6;
+    }
+
+
+    /* =========================================
+       DIVIDER
+       ========================================= */
+
+    .divider {
+      height: 1px;
+
+      background: #444444;
+
+      margin: 25px 0;
+    }
+
+
+    /* =========================================
+       INGREDIENT TITLE
+       ========================================= */
+
+    .section-title {
+      text-align: center;
+
+      font-size: 21px;
+
+      margin-bottom: 20px;
+
+      font-weight: 500;
+    }
+
+
+    /* =========================================
+       INGREDIENTS
+       ========================================= */
+
+    .ingredient-container {
+      display: flex;
+
+      justify-content: center;
+
+      gap: 35px;
+
+      flex-wrap: wrap;
+    }
+
+
+    .ingredient {
+      width: 330px;
+
+      background: #303030;
+
+      border-radius: 10px;
+
+      overflow: hidden;
+    }
+
+
+    .ingredient img {
+      width: 100%;
+      height: 150px;
+
+      object-fit: cover;
+
+      display: block;
+    }
+
+
+    .ingredient-text {
+      padding: 18px;
+    }
+
+
+    .ingredient-text h3 {
+      margin:
+        0 0 8px 0;
+
+      font-size: 19px;
+
+      font-weight: 500;
+    }
+
+
+    .ingredient-text p {
+      margin: 0;
+
+      color: #cccccc;
+
+      font-size: 15px;
+
+      line-height: 1.5;
+    }
+
+
+    /* =========================================
+       FLAVOR
+       ========================================= */
+
+    .flavor-section {
+      text-align: center;
+
+      margin-top: 28px;
+    }
+
+
+    .flavor-labels {
+      font-size: 18px;
+
+      letter-spacing: 2px;
+
+      margin-bottom: 10px;
+    }
+
+
+    .flavor-description {
+      color: #cccccc;
+
+      font-size: 15px;
+
+      line-height: 1.5;
+
+      max-width: 650px;
+
+      margin:
+        0 auto;
+    }
+
+
+    /* =========================================
+       CLOSE BUTTON
+       ========================================= */
+
+    .button-area {
+      text-align: center;
+
+      margin-top: 28px;
+    }
+
+
+    #closeButton {
+      padding:
+        12px 40px;
+
+      font-size: 17px;
+
+      color: white;
+
+      background: #555555;
+
+      border: none;
+
+      border-radius: 6px;
+
+      cursor: pointer;
+    }
+
+
+    #closeButton:hover {
+      background: #777777;
+    }
+
+
+    /* =========================================
+       SMALL SCREEN
+       ========================================= */
+
+    @media (max-width: 750px) {
+
+      .product-section {
+        flex-direction: column;
+      }
+
+      .product-image {
+        width: 100%;
+      }
+
+      .ingredient {
+        width: 100%;
+      }
+
+    }
+
+  </style>
 
 
   <script>
 
-    /* ========================================
-       FOOD INTERACTION
-       ======================================== */
+    /* ==================================================
+       MOUSE CLICK INTERACTION
+       ================================================== */
 
-    AFRAME.registerComponent('food-info', {
+    AFRAME.registerComponent(
+      'mouse-food-interaction',
+      {
 
-      init: function () {
+        init: function () {
 
-        this.el.addEventListener('click', function () {
+          const scene = this.el;
 
-          // 显示商品介绍
-          document
-            .querySelector('#food-panel')
-            .setAttribute('visible', true);
+          this.raycaster =
+            new THREE.Raycaster();
 
+          this.mouse =
+            new THREE.Vector2();
 
-          // 隐藏开始提示
-          document
-            .querySelector('#instruction')
-            .setAttribute('visible', false);
+          const component =
+            this;
 
 
-          // 显示 HTML CLOSE 按钮
-          document
-            .querySelector('#closeButton')
-            .style.display = 'block';
+          scene.addEventListener(
+            'loaded',
+            function () {
 
-        });
+
+              window.addEventListener(
+                'mousedown',
+                function (event) {
+
+
+                  /* Only left mouse button */
+
+                  if (event.button !== 0) {
+                    return;
+                  }
+
+
+                  /* Do not interact with scene
+                     when information is open */
+
+                  const overlay =
+                    document.querySelector(
+                      '#foodOverlay'
+                    );
+
+
+                  if (
+                    overlay.style.display ===
+                    'flex'
+                  ) {
+                    return;
+                  }
+
+
+                  /* CAMERA */
+
+                  const cameraEntity =
+                    document.querySelector(
+                      '#main-camera'
+                    );
+
+
+                  if (
+                    !cameraEntity ||
+                    !cameraEntity.components.camera
+                  ) {
+                    return;
+                  }
+
+
+                  const camera =
+                    cameraEntity
+                      .components
+                      .camera
+                      .camera;
+
+
+                  /* Mouse position */
+
+                  component.mouse.x =
+
+                    (
+                      event.clientX /
+                      window.innerWidth
+                    )
+
+                    * 2 - 1;
+
+
+                  component.mouse.y =
+
+                    -(
+
+                      event.clientY /
+                      window.innerHeight
+
+                    )
+
+                    * 2 + 1;
+
+
+                  /* Ray from actual mouse position */
+
+                  component.raycaster
+                    .setFromCamera(
+                      component.mouse,
+                      camera
+                    );
+
+
+                  /* Pink popcorn hotspot */
+
+                  const hotspot =
+                    document.querySelector(
+                      '#pink-popcorn'
+                    );
+
+
+                  if (!hotspot) {
+                    return;
+                  }
+
+
+                  /* Detect hotspot */
+
+                  const hits =
+                    component.raycaster
+                      .intersectObject(
+                        hotspot.object3D,
+                        true
+                      );
+
+
+                  /* Not clicked */
+
+                  if (
+                    hits.length === 0
+                  ) {
+                    return;
+                  }
+
+
+                  /* Too far */
+
+                  if (
+                    hits[0].distance > 10
+                  ) {
+                    return;
+                  }
+
+
+                  /* =================================
+                     CORRECT PRODUCT CLICKED
+                     ================================= */
+
+                  document
+                    .querySelector(
+                      '#foodOverlay'
+                    )
+                    .style.display =
+                    'flex';
+
+
+                  document
+                    .querySelector(
+                      '#instruction'
+                    )
+                    .style.display =
+                    'none';
+
+
+                }
+              );
+
+
+            }
+          );
+
+
+        }
 
       }
-
-    });
-
-
-    /* ========================================
-       CLOSE FOOD PANEL
-       ======================================== */
-
-    function closeFoodPanel() {
-
-      // 隐藏商品介绍
-      document
-        .querySelector('#food-panel')
-        .setAttribute('visible', false);
-
-
-      // 隐藏 CLOSE 按钮
-      document
-        .querySelector('#closeButton')
-        .style.display = 'none';
-
-    }
+    );
 
   </script>
 
 
-
   <script>
 
-    /* ========================================
+    /* ==================================================
        SIMPLE COLLISION
-       你原来的 collision 代码
-       ======================================== */
+       ================================================== */
 
-    AFRAME.registerComponent('simple-collision', {
-
-      init: function () {
-
-        this.lastPosition = new THREE.Vector3();
+    AFRAME.registerComponent(
+      'simple-collision',
+      {
 
 
-        const camera =
-          this.el.querySelector('[camera]');
+        init: function () {
+
+          this.lastPosition =
+            new THREE.Vector3();
 
 
-        if (camera) {
-
-          this.lastPosition.copy(
-            camera.object3D.position
-          );
-
-        }
-
-      },
+          const camera =
+            this.el.querySelector(
+              '[camera]'
+            );
 
 
-      tick: function () {
+          if (camera) {
 
-        const player = this.el;
-
-
-        const camera =
-          player.querySelector('[camera]');
-
-
-        if (!camera) return;
-
-
-
-        // Camera 在 player 内部的位置
-
-        const cameraPosition =
-          camera.object3D.position;
-
-
-
-        // Camera 在整个场景中的实际位置
-
-        const worldPosition =
-          new THREE.Vector3();
-
-
-        camera.object3D.getWorldPosition(
-          worldPosition
-        );
-
-
-
-        // 找到所有 collision box
-
-        const walls =
-          document.querySelectorAll(
-            '.collision-box'
-          );
-
-
-        let collided = false;
-
-
-
-        walls.forEach(function (wall) {
-
-
-          // 根据墙的位置和大小建立碰撞范围
-
-          const box =
-            new THREE.Box3()
-              .setFromObject(
-                wall.object3D
-              );
-
-
-
-          // 检测 X 和 Z
-
-          if (
-
-            worldPosition.x > box.min.x &&
-
-            worldPosition.x < box.max.x &&
-
-            worldPosition.z > box.min.z &&
-
-            worldPosition.z < box.max.z
-
-          ) {
-
-            collided = true;
+            this.lastPosition.copy(
+              camera.object3D.position
+            );
 
           }
 
-        });
+        },
 
 
+        tick: function () {
 
-        // 撞墙 → 回到之前的位置
+          const player =
+            this.el;
 
-        if (collided) {
 
-          cameraPosition.copy(
-            this.lastPosition
+          const camera =
+            player.querySelector(
+              '[camera]'
+            );
+
+
+          if (!camera) return;
+
+
+          const cameraPosition =
+            camera.object3D.position;
+
+
+          const worldPosition =
+            new THREE.Vector3();
+
+
+          camera.object3D
+            .getWorldPosition(
+              worldPosition
+            );
+
+
+          const walls =
+            document.querySelectorAll(
+              '.collision-box'
+            );
+
+
+          let collided =
+            false;
+
+
+          walls.forEach(
+            function (wall) {
+
+
+              const box =
+                new THREE.Box3()
+                  .setFromObject(
+                    wall.object3D
+                  );
+
+
+              if (
+
+                worldPosition.x >
+                box.min.x &&
+
+                worldPosition.x <
+                box.max.x &&
+
+                worldPosition.z >
+                box.min.z &&
+
+                worldPosition.z <
+                box.max.z
+
+              ) {
+
+                collided =
+                  true;
+
+              }
+
+            }
           );
 
-        }
 
+          if (collided) {
 
-        else {
+            cameraPosition.copy(
+              this.lastPosition
+            );
 
-          // 没撞墙 → 记录当前位置
+          }
 
-          this.lastPosition.copy(
-            cameraPosition
-          );
+          else {
+
+            this.lastPosition.copy(
+              cameraPosition
+            );
+
+          }
 
         }
 
       }
+    );
 
-    });
+  </script>
+
+
+  <script>
+
+    /* ==================================================
+       CLOSE
+       ================================================== */
+
+    function closeFoodPanel() {
+
+      document
+        .querySelector(
+          '#foodOverlay'
+        )
+        .style.display =
+        'none';
+
+    }
 
   </script>
 
@@ -205,73 +694,267 @@
 
 
 
-<body style="margin:0;">
+<body>
 
 
-  <!-- ========================================
-       REAL HTML CLOSE BUTTON
-       这个按钮不属于 A-Frame
-       所以鼠标可以直接点击
-       ======================================== -->
+  <!-- ==================================================
+       START INSTRUCTION
+       ================================================== -->
 
+  <div id="instruction">
 
-  <button
+    Click the pink popcorn package
 
-    id="closeButton"
-
-    onclick="closeFoodPanel()"
-
-    style="
-
-      display:none;
-
-      position:fixed;
-
-      left:50%;
-
-      bottom:18%;
-
-      transform:translateX(-50%);
-
-      z-index:99999;
-
-      padding:12px 35px;
-
-      font-size:20px;
-
-      font-family:Arial, sans-serif;
-
-      color:#ff7777;
-
-      background:#444444;
-
-      border:none;
-
-      border-radius:5px;
-
-      cursor:pointer;
-
-    ">
-
-    CLOSE
-
-  </button>
+  </div>
 
 
 
-  <!-- ========================================
+  <!-- ==================================================
+       FOOD INFORMATION
+       ================================================== -->
+
+  <div id="foodOverlay">
+
+
+    <div id="foodCard">
+
+
+      <!-- TITLE -->
+
+      <h1>
+
+        LesserEvil Himalayan Pink Salt Popcorn
+
+      </h1>
+
+
+      <div class="subtitle">
+
+        A simple snack made with a short list of ingredients
+
+      </div>
+
+
+
+      <!-- =========================================
+           PRODUCT
+           ========================================= -->
+
+      <div class="product-section">
+
+
+        <img
+
+          class="product-image"
+
+          src="image/popcorn2.jpg"
+
+          alt="LesserEvil Popcorn">
+
+
+
+        <div class="product-description">
+
+
+          <h2>
+
+            What's inside?
+
+          </h2>
+
+
+          <p>
+
+            This popcorn combines organic popcorn,
+            coconut oil, and Himalayan pink salt.
+            The simple ingredient combination creates
+            a light and crunchy snack with a subtle
+            salty flavor.
+
+          </p>
+
+
+        </div>
+
+
+      </div>
+
+
+
+      <div class="divider"></div>
+
+
+
+      <!-- =========================================
+           INGREDIENTS
+           ========================================= -->
+
+      <div class="section-title">
+
+        Key Ingredients
+
+      </div>
+
+
+
+      <div class="ingredient-container">
+
+
+        <!-- COCONUT OIL -->
+
+        <div class="ingredient">
+
+
+          <img
+
+            src="image/oil.jpg"
+
+            alt="Coconut Oil">
+
+
+          <div class="ingredient-text">
+
+
+            <h3>
+
+              Coconut Oil
+
+            </h3>
+
+
+            <p>
+
+              Coconut oil is used to coat the popcorn
+              and contributes to its light texture and
+              subtle flavor.
+
+            </p>
+
+
+          </div>
+
+
+        </div>
+
+
+
+        <!-- PINK SALT -->
+
+        <div class="ingredient">
+
+
+          <img
+
+            src="image/pinksalt.jpg"
+
+            alt="Himalayan Pink Salt">
+
+
+          <div class="ingredient-text">
+
+
+            <h3>
+
+              Himalayan Pink Salt
+
+            </h3>
+
+
+            <p>
+
+              Himalayan pink salt provides the salty
+              seasoning that gives this popcorn its
+              characteristic flavor.
+
+            </p>
+
+
+          </div>
+
+
+        </div>
+
+
+      </div>
+
+
+
+      <div class="divider"></div>
+
+
+
+      <!-- =========================================
+           FLAVOR
+           ========================================= -->
+
+      <div class="flavor-section">
+
+
+        <div class="flavor-labels">
+
+          LIGHT &nbsp; · &nbsp;
+          CRUNCHY &nbsp; · &nbsp;
+          SALTY
+
+        </div>
+
+
+        <div class="flavor-description">
+
+          The result is a simple popcorn with a crisp
+          texture and lightly salted taste, rather than
+          a heavily flavored snack.
+
+        </div>
+
+
+      </div>
+
+
+
+      <!-- =========================================
+           CLOSE
+           ========================================= -->
+
+      <div class="button-area">
+
+
+        <button
+
+          id="closeButton"
+
+          type="button"
+
+          onclick="closeFoodPanel()">
+
+          CLOSE
+
+        </button>
+
+
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+
+  <!-- ==================================================
        A-FRAME SCENE
-       ======================================== -->
+       ================================================== -->
+
+  <a-scene
+
+    mouse-food-interaction
+
+    background="color: #1a1a1a">
 
 
-  <a-scene background="color: #1a1a1a">
 
-
-
-    <!-- =====================================
-         ASSETS
-         ===================================== -->
-
+    <!-- ASSETS -->
 
     <a-assets>
 
@@ -289,10 +972,7 @@
 
 
 
-    <!-- =====================================
-         SUPERMARKET MODEL
-         ===================================== -->
-
+    <!-- SUPERMARKET MODEL -->
 
     <a-entity
 
@@ -302,16 +982,10 @@
 
 
 
-    <!-- =====================================
-         COLLISION WALLS
-
-         下面全部保持你原来的数据
-         ===================================== -->
-
-
-
-    <!-- 1. 货架正面的碰撞墙 -->
-
+    <!-- ==================================================
+         FRONT COLLISION
+         原来的数值
+         ================================================== -->
 
     <a-box
 
@@ -333,20 +1007,22 @@
 
 
 
-    <!-- 2. 左边碰撞墙 -->
-
+    <!-- ==================================================
+         LEFT COLLISION
+         已延长
+         ================================================== -->
 
     <a-box
 
       class="collision-box"
 
-      position="-1.7 1.2 1.8"
+      position="-1.7 1.2 4"
 
       width="0.15"
 
       height="2.2"
 
-      depth="3.2"
+      depth="12"
 
       color="blue"
 
@@ -356,20 +1032,22 @@
 
 
 
-    <!-- 3. 右边碰撞墙 -->
-
+    <!-- ==================================================
+         RIGHT COLLISION
+         已延长
+         ================================================== -->
 
     <a-box
 
       class="collision-box"
 
-      position="1.7 1.2 1.8"
+      position="1.7 1.2 4"
 
       width="0.15"
 
       height="2.2"
 
-      depth="3.2"
+      depth="12"
 
       color="blue"
 
@@ -379,45 +1057,33 @@
 
 
 
-    <!-- =====================================
-         PINK POPCORN CLICK AREA
+    <!-- ==================================================
+         INVISIBLE PINK POPCORN CLICK AREA
+         ================================================== -->
 
-         对应你图片里的两袋
-         LesserEvil 粉色爆米花
-         ===================================== -->
-
-
-    <a-box
+    <a-plane
 
       id="pink-popcorn"
 
-      class="food-clickable"
-
       position="0 1.65 0.95"
 
-      width="0.65"
+      width="0.55"
 
       height="0.55"
 
-      depth="0.1"
-
       material="
-        color: yellow;
+        color: white;
         opacity: 0;
-        transparent: true"
+        transparent: true;
+        side: double">
 
-      food-info>
-
-    </a-box>
-
+    </a-plane>
 
 
-    <!-- =====================================
+
+    <!-- ==================================================
          PLAYER
-
-         原来的位置保持不变
-         ===================================== -->
-
+         ================================================== -->
 
     <a-entity
 
@@ -431,155 +1097,14 @@
 
       <!-- CAMERA -->
 
-
       <a-camera
+
+        id="main-camera"
 
         position="0 1.6 0"
 
-        wasd-controls="acceleration: 10">
-
-
-
-        <!-- =================================
-             SCREEN CENTER CURSOR
-             ================================= -->
-
-
-        <a-cursor
-
-          color="white"
-
-          raycaster="objects: .food-clickable">
-
-        </a-cursor>
-
-
-
-        <!-- =================================
-             START INSTRUCTION
-             ================================= -->
-
-
-        <a-entity
-
-          id="instruction"
-
-          position="0 0.55 -1.5">
-
-
-
-          <!-- Background -->
-
-
-          <a-plane
-
-            width="2.5"
-
-            height="0.34"
-
-            color="#111111"
-
-            opacity="0.8">
-
-          </a-plane>
-
-
-
-          <!-- Instruction -->
-
-
-          <a-text
-
-            value="Click the pink popcorn package"
-
-            position="0 0 0.01"
-
-            align="center"
-
-            width="2.1"
-
-            color="white">
-
-          </a-text>
-
-
-        </a-entity>
-
-
-
-        <!-- =================================
-             FOOD INFORMATION
-             ================================= -->
-
-
-        <a-entity
-
-          id="food-panel"
-
-          position="0 0 -1.3"
-
-          visible="false">
-
-
-
-          <!-- Black background -->
-
-
-          <a-plane
-
-            width="2.4"
-
-            height="1.25"
-
-            color="#111111"
-
-            opacity="0.94">
-
-          </a-plane>
-
-
-
-          <!-- Product Name -->
-
-
-          <a-text
-
-            value="LesserEvil Himalayan Pink Salt Popcorn"
-
-            position="0 0.35 0.02"
-
-            align="center"
-
-            width="1.9"
-
-            color="white">
-
-          </a-text>
-
-
-
-          <!-- Product Information -->
-
-
-          <a-text
-
-            value="This popcorn is made with organic popcorn, coconut oil, and Himalayan pink salt. It has a light, crunchy texture and a simple salty flavor."
-
-            position="0 -0.05 0.02"
-
-            align="center"
-
-            width="1.8"
-
-            wrap-count="38"
-
-            color="white">
-
-          </a-text>
-
-
-        </a-entity>
-
+        wasd-controls="
+          acceleration: 10">
 
       </a-camera>
 
@@ -587,11 +1112,9 @@
     </a-entity>
 
 
-
   </a-scene>
 
 
 </body>
-
 
 </html>
