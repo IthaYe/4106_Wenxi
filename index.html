@@ -1,1940 +1,1455 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <title>Snack Shopping Challenge</title>
+<meta charset="UTF-8">
+<title>Snack Shopping Challenge</title>
+<script src="https://aframe.io/releases/1.8.0/aframe.min.js"></script>
 
-  <script src="https://aframe.io/releases/1.8.0/aframe.min.js"></script>
+<style>
+body{
+  margin:0;
+  overflow:hidden;
+  font-family:Arial,sans-serif;
+}
 
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      font-family: Arial, sans-serif;
-    }
+#productOverlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:10000;
+  background:rgba(0,0,0,.68);
+  align-items:center;
+  justify-content:center;
+}
 
-    /* =====================================================
-       PRODUCT OVERLAY
-    ===================================================== */
+#productCard{
+  width:min(820px,90vw);
+  max-height:90vh;
+  overflow-y:auto;
+  box-sizing:border-box;
+  background:#F7F2E8;
+  color:#26384D;
+  padding:25px 32px;
+  border-radius:15px;
+  border:4px solid #26384D;
+}
 
-    #productOverlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 10000;
-      background: rgba(0, 0, 0, 0.68);
-      align-items: center;
-      justify-content: center;
-    }
+#productTitle{
+  text-align:center;
+  margin:0 0 5px;
+  font-size:27px;
+}
 
-    #productCard {
-      width: min(850px, 86vw);
-      max-height: 86vh;
-      overflow-y: auto;
-      box-sizing: border-box;
-      background: #181818;
-      color: white;
-      padding: 32px 40px;
-      border-radius: 15px;
-    }
+#productSubtitle{
+  text-align:center;
+  color:#C95F42;
+  font-size:20px;
+  font-weight:bold;
+  letter-spacing:1px;
+  margin-bottom:18px;
+}
 
-    #productTitle {
-      text-align: center;
-      margin: 0 0 6px;
-      font-size: 30px;
-    }
+.product-main{
+  display:flex;
+  gap:28px;
+  align-items:center;
+}
 
-    #productSubtitle {
-      text-align: center;
-      color: #aaa;
-      margin-bottom: 25px;
-    }
+#productImage{
+  width:280px;
+  height:210px;
+  object-fit:cover;
+  border-radius:10px;
+  background:white;
+}
 
-    .product-main {
-      display: flex;
-      gap: 30px;
-      align-items: center;
-    }
+.product-copy{
+  flex:1;
+}
 
-    #productImage {
-      width: 300px;
-      height: 200px;
-      object-fit: cover;
-      border-radius: 10px;
-    }
+#productDescription{
+  color:#4E5560;
+  line-height:1.55;
+  font-size:16px;
+  margin:0;
+}
 
-    #productDescription {
-      color: #ccc;
-      line-height: 1.6;
-    }
+#promoSection{
+  display:none;
+}
 
-    .divider {
-      border-top: 1px solid #444;
-      margin: 25px 0;
-    }
+.promoFeatures{
+  display:flex;
+  gap:15px;
+  margin-top:20px;
+}
 
-    /* =====================================================
-       INGREDIENTS
-    ===================================================== */
+.promoFeature{
+  flex:1;
+  display:flex;
+  align-items:center;
+  background:white;
+  border-radius:10px;
+  overflow:hidden;
+  min-height:105px;
+}
 
-    #ingredientSection {
-      display: none;
-    }
+.promoFeature img{
+  width:110px;
+  height:105px;
+  object-fit:cover;
+}
 
-    .ingredientTitle {
-      text-align: center;
-      font-size: 21px;
-      margin-bottom: 18px;
-    }
+.promoFeatureText{
+  padding:12px;
+}
 
-    .ingredients {
-      display: flex;
-      gap: 25px;
-      justify-content: center;
-    }
+.promoFeatureText h3{
+  margin:0 0 5px;
+  color:#26384D;
+  font-size:15px;
+}
 
-    .ingredient {
-      width: 310px;
-      background: #303030;
-      border-radius: 10px;
-      overflow: hidden;
-    }
+.promoFeatureText p{
+  margin:0;
+  color:#777;
+  font-size:13px;
+  line-height:1.35;
+}
 
-    .ingredient img {
-      width: 100%;
-      height: 145px;
-      object-fit: cover;
-    }
+#promoCTA{
+  text-align:center;
+  margin-top:18px;
+  color:#C95F42;
+  font-size:16px;
+  font-weight:bold;
+  letter-spacing:.5px;
+}
 
-    .ingredient div {
-      padding: 15px;
-    }
+.productButtons{
+  display:flex;
+  justify-content:center;
+  gap:15px;
+  margin-top:18px;
+}
 
-    .ingredient h3 {
-      margin: 0 0 6px;
-    }
+.productButtons button{
+  padding:11px 27px;
+  border:none;
+  border-radius:6px;
+  font-size:14px;
+  cursor:pointer;
+}
 
-    .ingredient p {
-      color: #ccc;
-      line-height: 1.5;
-    }
+#closeButton{
+  background:#68727C;
+  color:white;
+}
 
-    /* =====================================================
-       BUTTONS
-    ===================================================== */
+#closeButton:hover{
+  background:#7D8791;
+}
 
-    .productButtons {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      margin-top: 28px;
-    }
+#addButton{
+  background:#26384D;
+  color:white;
+  font-weight:bold;
+}
 
-    .productButtons button {
-      padding: 12px 28px;
-      border: none;
-      border-radius: 6px;
-      font-size: 15px;
-      cursor: pointer;
-    }
+#addButton:hover{
+  background:#364D68;
+}
 
-    #closeButton {
-      background: #555;
-      color: white;
-    }
+#alreadyAdded{
+  display:none;
+  text-align:center;
+  margin-top:17px;
+  color:#4E9D62;
+  font-weight:bold;
+}
 
-    #closeButton:hover {
-      background: #777;
-    }
+#message{
+  display:none;
+  position:fixed;
+  left:50%;
+  bottom:35px;
+  transform:translateX(-50%);
+  z-index:9000;
+  padding:12px 22px;
+  background:rgba(25,25,25,.92);
+  color:white;
+  border-radius:7px;
+  pointer-events:none;
+}
 
-    #addButton {
-      background: #E3B65A;
-      color: #181818;
-      font-weight: bold;
-    }
+#completeOverlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:11000;
+  background:rgba(0,0,0,.72);
+  align-items:center;
+  justify-content:center;
+}
 
-    #addButton:hover {
-      background: #F0C66B;
-    }
+#completeCard{
+  width:min(500px,85vw);
+  box-sizing:border-box;
+  padding:40px;
+  background:#F7F4EC;
+  color:#26384D;
+  border-radius:15px;
+  text-align:center;
+}
 
-    #alreadyAdded {
-      display: none;
-      text-align: center;
-      margin-top: 20px;
-      color: #76D68A;
-      font-weight: bold;
-    }
+#completeCard h1{
+  margin-top:0;
+}
 
-    /* =====================================================
-       SMALL MESSAGE
-    ===================================================== */
+#completeCard p{
+  color:#666;
+  line-height:1.6;
+}
 
-    #message {
-      display: none;
-      position: fixed;
-      left: 50%;
-      bottom: 35px;
-      transform: translateX(-50%);
-      z-index: 9000;
-      padding: 12px 22px;
-      background: rgba(25, 25, 25, 0.92);
-      color: white;
-      border-radius: 7px;
-      pointer-events: none;
-    }
+#nextButton{
+  margin-top:15px;
+  padding:13px 30px;
+  border:none;
+  border-radius:7px;
+  background:#26384D;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+}
 
-    /* =====================================================
-       COMPLETE OVERLAY
-    ===================================================== */
+@media(max-width:700px){
+  .product-main{
+    flex-direction:column;
+  }
 
-    #completeOverlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 11000;
-      background: rgba(0, 0, 0, 0.72);
-      align-items: center;
-      justify-content: center;
-    }
+  #productImage{
+    width:100%;
+  }
 
-    #completeCard {
-      width: min(500px, 85vw);
-      box-sizing: border-box;
-      padding: 40px;
-      background: #F7F4EC;
-      color: #26384D;
-      border-radius: 15px;
-      text-align: center;
-    }
+  .promoFeatures{
+    flex-direction:column;
+  }
+}
+</style>
 
-    #completeCard h1 {
-      margin-top: 0;
-    }
+<script>
 
-    #completeCard p {
-      color: #666;
-      line-height: 1.6;
-    }
+const productData={
 
-    #nextButton {
-      margin-top: 15px;
-      padding: 13px 30px;
-      border: none;
-      border-radius: 7px;
-      background: #26384D;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-    }
+  popcorn:{
+    title:"LesserEvil Himalayan Pink Salt Popcorn",
+    subtitle:"LIGHT, CRUNCHY & SIMPLE",
+    image:"image/popcorn2.jpg",
+    description:"A light and crunchy popcorn with coconut oil and Himalayan pink salt.",
+    promo:true,
+    cta:"TRY SOMETHING LIGHT & CRUNCHY"
+  },
 
-    @media (max-width: 700px) {
-      .product-main,
-      .ingredients {
-        flex-direction: column;
-      }
+  jerky:{
+    title:"Beef Jerky",
+    subtitle:"A savory high-protein snack",
+    image:"",
+    description:"Beef jerky is made from seasoned cuts of beef that are dried to remove moisture. This process gives the snack its characteristic chewy texture and concentrated savory flavor.",
+    promo:false
+  },
 
-      #productImage,
-      .ingredient {
-        width: 100%;
-      }
-    }
-  </style>
+  graza:{
+    title:"GRAZA",
+    subtitle:"Olive oil in a distinctive squeeze bottle",
+    image:"",
+    description:"GRAZA is known for olive oil packaged in a squeeze bottle designed for easy use while cooking. Olive oil can be used for cooking, finishing dishes, dressings, and many other everyday foods.",
+    promo:false
+  }
 
+};
 
-  <script>
+const productTargets={
 
-    /* =====================================================
-       PRODUCT INFORMATION
-    ===================================================== */
+  popcorn:{
+    xMin:.40,
+    xMax:.60,
+    yMin:.36,
+    yMax:.64
+  },
 
-    const productData = {
+  jerky:{
+    xMin:.25,
+    xMax:.43,
+    yMin:.45,
+    yMax:.73
+  },
 
-      popcorn: {
-        title: "LesserEvil Himalayan Pink Salt Popcorn",
+  graza:{
+    xMin:.59,
+    xMax:.79,
+    yMin:.36,
+    yMax:.64
+  }
 
-        subtitle:
-          "A simple snack made with a short list of ingredients",
+};
 
-        image:
-          "image/popcorn2.jpg",
+let currentProduct=null;
 
-        description:
-          "This popcorn combines organic popcorn, coconut oil, and Himalayan pink salt. The simple ingredient combination creates a light and crunchy snack with a subtle salty flavor.",
+AFRAME.registerComponent("shopping-game",{
 
-        ingredients: true
-      },
+  init:function(){
 
+    window.shoppingGame=this;
 
-      jerky: {
-        title: "Beef Jerky",
-
-        subtitle:
-          "A savory high-protein snack",
-
-        image: "",
-
-        description:
-          "Beef jerky is made from seasoned cuts of beef that are dried to remove moisture. This process gives the snack its characteristic chewy texture and concentrated savory flavor.",
-
-        ingredients: false
-      },
-
-
-      graza: {
-        title: "GRAZA",
-
-        subtitle:
-          "Olive oil in a distinctive squeeze bottle",
-
-        image: "",
-
-        description:
-          "GRAZA is known for olive oil packaged in a squeeze bottle designed for easy use while cooking. Olive oil can be used for cooking, finishing dishes, dressings, and many other everyday foods.",
-
-        ingredients: false
-      }
-
+    this.found={
+      popcorn:false,
+      jerky:false,
+      graza:false
     };
 
+    this.raycaster=new THREE.Raycaster();
+    this.mouse=new THREE.Vector2();
+    this.messageTimer=null;
 
-    /* =====================================================
-       PRODUCT CLICK AREAS
+    window.addEventListener("mousedown",event=>{
 
-       这里使用的是整个 snack.glb 的相对位置。
+      if(event.button!==0)return;
 
-       X:
-       0 = 模型最左边
-       1 = 模型最右边
+      const productOverlay=
+        document.querySelector("#productOverlay");
 
-       Y:
-       0 = 模型最下面
-       1 = 模型最上面
+      const completeOverlay=
+        document.querySelector("#completeOverlay");
 
-       不再要求用户点击某一个精准 XYZ 坐标。
-    ===================================================== */
-
-    const productTargets = {
-
-      /* =================================================
-         PINK SALT POPCORN
-
-         给整个粉色包装一个比较大的范围
-      ================================================= */
-
-      popcorn: {
-
-        xMin: 0.40,
-        xMax: 0.60,
-
-        yMin: 0.36,
-        yMax: 0.64
-
-      },
-
-
-      /* =================================================
-         BEEF JERKY
-      ================================================= */
-
-      jerky: {
-
-        xMin: 0.25,
-        xMax: 0.43,
-
-        yMin: 0.45,
-        yMax: 0.73
-
-      },
-
-
-      /* =================================================
-         GRAZA
-      ================================================= */
-
-      graza: {
-
-        xMin: 0.59,
-        xMax: 0.79,
-
-        yMin: 0.36,
-        yMax: 0.64
-
+      if(
+        productOverlay.style.display==="flex" ||
+        completeOverlay.style.display==="flex"
+      ){
+        return;
       }
 
-    };
+      const camera=
+        document.querySelector("#main-camera");
 
+      const model=
+        document.querySelector("#snack-model");
 
-    let currentProduct = null;
+      if(
+        !camera ||
+        !camera.components.camera ||
+        !model
+      ){
+        return;
+      }
 
+      this.mouse.x=
+        (event.clientX/window.innerWidth)*2-1;
 
-    /* =====================================================
-       SHOPPING GAME
-    ===================================================== */
+      this.mouse.y=
+        -(event.clientY/window.innerHeight)*2+1;
 
-    AFRAME.registerComponent("shopping-game", {
+      this.raycaster.setFromCamera(
+        this.mouse,
+        camera.components.camera.camera
+      );
 
-      init: function () {
-
-        window.shoppingGame = this;
-
-
-        this.found = {
-          popcorn: false,
-          jerky: false,
-          graza: false
-        };
-
-
-        this.raycaster =
-          new THREE.Raycaster();
-
-
-        this.mouse =
-          new THREE.Vector2();
-
-
-        this.messageTimer =
-          null;
-
-
-        window.addEventListener(
-          "mousedown",
-          event => {
-
-            /* =================================================
-               LEFT CLICK ONLY
-            ================================================= */
-
-            if (event.button !== 0) {
-              return;
-            }
-
-
-            /* =================================================
-               DO NOT CLICK SCENE WHILE PANEL IS OPEN
-            ================================================= */
-
-            const productOverlay =
-              document.querySelector(
-                "#productOverlay"
-              );
-
-
-            const completeOverlay =
-              document.querySelector(
-                "#completeOverlay"
-              );
-
-
-            if (
-              productOverlay.style.display === "flex" ||
-              completeOverlay.style.display === "flex"
-            ) {
-              return;
-            }
-
-
-            const camera =
-              document.querySelector(
-                "#main-camera"
-              );
-
-
-            const model =
-              document.querySelector(
-                "#snack-model"
-              );
-
-
-            if (
-              !camera ||
-              !camera.components.camera ||
-              !model
-            ) {
-              return;
-            }
-
-
-            /* =================================================
-               MOUSE POSITION
-            ================================================= */
-
-            this.mouse.x =
-              (event.clientX / window.innerWidth) * 2 - 1;
-
-
-            this.mouse.y =
-              -(event.clientY / window.innerHeight) * 2 + 1;
-
-
-            /* =================================================
-               RAYCAST
-            ================================================= */
-
-            this.raycaster.setFromCamera(
-              this.mouse,
-              camera.components.camera.camera
-            );
-
-
-            /* =================================================
-               ONLY CHECK THE REAL snack.glb
-            ================================================= */
-
-            const hits =
-              this.raycaster.intersectObject(
-                model.object3D,
-                true
-              );
-
-
-            if (hits.length === 0) {
-
-              this.showMessage(
-                "Click directly on a product."
-              );
-
-              return;
-            }
-
-
-            /* =================================================
-               ACTUAL POINT USER CLICKED
-            ================================================= */
-
-            const worldPoint =
-              hits[0].point.clone();
-
-
-            /* =================================================
-               FIND PRODUCT
-            ================================================= */
-
-            const product =
-              this.findProduct(
-                worldPoint
-              );
-
-
-            if (product) {
-
-              openProduct(product);
-
-            } else {
-
-              this.showMessage(
-                "This item is not on your shopping list."
-              );
-
-            }
-
-          }
+      const hits=
+        this.raycaster.intersectObject(
+          model.object3D,
+          true
         );
 
-      },
-
-
-      /* =====================================================
-         FIND PRODUCT
-
-         IMPORTANT:
-
-         这里不再比较一个 XYZ 点。
-
-         我们先计算整个 snack.glb 的尺寸，
-         然后把点击位置变成 0 - 1 的比例。
-
-         所以：
-         左边 = 0
-         中间 = 0.5
-         右边 = 1
-      ===================================================== */
-
-      findProduct: function (worldPoint) {
-
-        const model =
-          document.querySelector(
-            "#snack-model"
-          );
-
-
-        if (!model) {
-          return null;
-        }
-
-
-        /* =================================================
-           ENTIRE MODEL BOUNDING BOX
-        ================================================= */
-
-        const box =
-          new THREE.Box3().setFromObject(
-            model.object3D
-          );
-
-
-        const size =
-          new THREE.Vector3();
-
-
-        box.getSize(size);
-
-
-        if (
-          size.x <= 0 ||
-          size.y <= 0
-        ) {
-          return null;
-        }
-
-
-        /* =================================================
-           NORMALIZE CLICK POSITION
-
-           Example:
-
-           far left  = 0
-           center    = .5
-           far right = 1
-        ================================================= */
-
-        const normalizedX =
-          (worldPoint.x - box.min.x) /
-          size.x;
-
-
-        const normalizedY =
-          (worldPoint.y - box.min.y) /
-          size.y;
-
-
-        /* =================================================
-           CHECK EACH LARGE PRODUCT AREA
-        ================================================= */
-
-        for (
-          const product in productTargets
-        ) {
-
-          const area =
-            productTargets[product];
-
-
-          const insideX =
-            normalizedX >= area.xMin &&
-            normalizedX <= area.xMax;
-
-
-          const insideY =
-            normalizedY >= area.yMin &&
-            normalizedY <= area.yMax;
-
-
-          if (
-            insideX &&
-            insideY
-          ) {
-
-            return product;
-
-          }
-
-        }
-
-
-        return null;
-
-      },
-
-
-      /* =====================================================
-         ADD PRODUCT TO CART
-      ===================================================== */
-
-      addItem: function (product) {
-
-        if (
-          !product ||
-          this.found[product]
-        ) {
-          return;
-        }
-
-
-        this.found[product] = true;
-
-
-        /* =================================================
-           CHECKMARK
-        ================================================= */
-
-        const check =
-          document.querySelector(
-            "#" +
-            product +
-            "-check"
-          );
-
-
-        if (check) {
-
-          check.setAttribute(
-            "value",
-            "✓"
-          );
-
-
-          check.setAttribute(
-            "color",
-            "#4E9D62"
-          );
-
-        }
-
-
-        /* =================================================
-           LABEL GREEN
-        ================================================= */
-
-        const label =
-          document.querySelector(
-            "#" +
-            product +
-            "-label"
-          );
-
-
-        if (label) {
-
-          label.setAttribute(
-            "color",
-            "#4E9D62"
-          );
-
-        }
-
+      if(hits.length===0){
 
         this.showMessage(
-          productData[product].title +
-          " added to cart!"
+          "Click directly on a product."
         );
 
+        return;
+      }
 
-        this.updateProgress();
-
-      },
-
-
-      /* =====================================================
-         UPDATE SHOPPING PROGRESS
-      ===================================================== */
-
-      updateProgress: function () {
-
-        let count = 0;
-
-
-        if (this.found.popcorn) {
-          count++;
-        }
-
-
-        if (this.found.jerky) {
-          count++;
-        }
-
-
-        if (this.found.graza) {
-          count++;
-        }
-
-
-        document
-          .querySelector(
-            "#progress-text"
-          )
-          .setAttribute(
-            "value",
-            count +
-            " / 3 ITEMS FOUND"
-          );
-
-
-        /* =================================================
-           COMPLETE
-        ================================================= */
-
-        if (count === 3) {
-
-          document
-            .querySelector(
-              "#status-text"
-            )
-            .setAttribute(
-              "value",
-              "SHOPPING COMPLETE!"
-            );
-
-
-          document
-            .querySelector(
-              "#status-text"
-            )
-            .setAttribute(
-              "color",
-              "#4E9D62"
-            );
-
-
-          document
-            .querySelector(
-              "#next-level"
-            )
-            .setAttribute(
-              "visible",
-              true
-            );
-
-
-          setTimeout(() => {
-
-            document
-              .querySelector(
-                "#completeOverlay"
-              )
-              .style.display =
-              "flex";
-
-          }, 600);
-
-        }
-
-      },
-
-
-      /* =====================================================
-         MESSAGE
-      ===================================================== */
-
-      showMessage: function (text) {
-
-        const message =
-          document.querySelector(
-            "#message"
-          );
-
-
-        message.textContent =
-          text;
-
-
-        message.style.display =
-          "block";
-
-
-        clearTimeout(
-          this.messageTimer
+      const product=
+        this.findProduct(
+          hits[0].point.clone()
         );
 
+      if(product){
 
-        this.messageTimer =
-          setTimeout(() => {
+        openProduct(product);
 
-            message.style.display =
-              "none";
+      }else{
 
-          }, 1800);
+        this.showMessage(
+          "This item is not on your shopping list."
+        );
 
       }
 
     });
 
+  },
 
-    /* =====================================================
-       OPEN PRODUCT INFORMATION
-    ===================================================== */
+  findProduct:function(worldPoint){
 
-    function openProduct(product) {
+    const model=
+      document.querySelector("#snack-model");
 
-      const data =
-        productData[product];
+    if(!model)return null;
 
+    const box=
+      new THREE.Box3().setFromObject(
+        model.object3D
+      );
 
-      if (!data) {
-        return;
+    const size=
+      new THREE.Vector3();
+
+    box.getSize(size);
+
+    if(
+      size.x<=0 ||
+      size.y<=0
+    ){
+      return null;
+    }
+
+    const normalizedX=
+      (worldPoint.x-box.min.x)/size.x;
+
+    const normalizedY=
+      (worldPoint.y-box.min.y)/size.y;
+
+    for(
+      const product in productTargets
+    ){
+
+      const area=
+        productTargets[product];
+
+      if(
+        normalizedX>=area.xMin &&
+        normalizedX<=area.xMax &&
+        normalizedY>=area.yMin &&
+        normalizedY<=area.yMax
+      ){
+        return product;
       }
-
-
-      currentProduct =
-        product;
-
-
-      /* TITLE */
-
-      document
-        .querySelector(
-          "#productTitle"
-        )
-        .textContent =
-        data.title;
-
-
-      /* SUBTITLE */
-
-      document
-        .querySelector(
-          "#productSubtitle"
-        )
-        .textContent =
-        data.subtitle;
-
-
-      /* DESCRIPTION */
-
-      document
-        .querySelector(
-          "#productDescription"
-        )
-        .textContent =
-        data.description;
-
-
-      /* =================================================
-         IMAGE
-      ================================================= */
-
-      const image =
-        document.querySelector(
-          "#productImage"
-        );
-
-
-      if (data.image) {
-
-        image.src =
-          data.image;
-
-
-        image.style.display =
-          "block";
-
-      } else {
-
-        image.style.display =
-          "none";
-
-      }
-
-
-      /* =================================================
-         POPCORN INGREDIENTS
-      ================================================= */
-
-      document
-        .querySelector(
-          "#ingredientSection"
-        )
-        .style.display =
-          data.ingredients
-            ? "block"
-            : "none";
-
-
-      /* =================================================
-         ALREADY IN CART?
-      ================================================= */
-
-      const alreadyFound =
-        window.shoppingGame
-          .found[product];
-
-
-      document
-        .querySelector(
-          "#addButton"
-        )
-        .style.display =
-          alreadyFound
-            ? "none"
-            : "block";
-
-
-      document
-        .querySelector(
-          "#alreadyAdded"
-        )
-        .style.display =
-          alreadyFound
-            ? "block"
-            : "none";
-
-
-      /* =================================================
-         SHOW OVERLAY
-      ================================================= */
-
-      document
-        .querySelector(
-          "#productOverlay"
-        )
-        .style.display =
-          "flex";
 
     }
 
+    return null;
 
-    /* =====================================================
-       CLOSE PRODUCT
-    ===================================================== */
+  },
 
-    function closeProduct() {
+  addItem:function(product){
 
-      document
-        .querySelector(
-          "#productOverlay"
-        )
-        .style.display =
-          "none";
+    if(
+      !product ||
+      this.found[product]
+    ){
+      return;
+    }
 
+    this.found[product]=true;
 
-      currentProduct =
-        null;
+    const check=
+      document.querySelector(
+        "#"+product+"-check"
+      );
+
+    const label=
+      document.querySelector(
+        "#"+product+"-label"
+      );
+
+    if(check){
+
+      check.setAttribute(
+        "value",
+        "✓"
+      );
+
+      check.setAttribute(
+        "color",
+        "#4E9D62"
+      );
 
     }
 
+    if(label){
 
-    /* =====================================================
-       ADD CURRENT PRODUCT
-    ===================================================== */
-
-    function addCurrentProduct() {
-
-      if (!currentProduct) {
-        return;
-      }
-
-
-      window.shoppingGame
-        .addItem(
-          currentProduct
-        );
-
-
-      closeProduct();
+      label.setAttribute(
+        "color",
+        "#4E9D62"
+      );
 
     }
 
-
-    /* =====================================================
-       COMPLETE SCREEN
-    ===================================================== */
-
-    function closeCompletePanel() {
-
-      document
-        .querySelector(
-          "#completeOverlay"
-        )
-        .style.display =
-          "none";
-
-    }
-
-
-    /* =====================================================
-       COLLISION
-    ===================================================== */
-
-    AFRAME.registerComponent(
-      "simple-collision",
-      {
-
-        init: function () {
-
-          this.lastPosition =
-            new THREE.Vector3();
-
-
-          const camera =
-            this.el.querySelector(
-              "[camera]"
-            );
-
-
-          if (camera) {
-
-            this.lastPosition.copy(
-              camera.object3D.position
-            );
-
-          }
-
-        },
-
-
-        tick: function () {
-
-          const player =
-            this.el;
-
-
-          const camera =
-            player.querySelector(
-              "[camera]"
-            );
-
-
-          if (!camera) {
-            return;
-          }
-
-
-          const cameraPosition =
-            camera.object3D.position;
-
-
-          const worldPosition =
-            new THREE.Vector3();
-
-
-          camera.object3D
-            .getWorldPosition(
-              worldPosition
-            );
-
-
-          const walls =
-            document.querySelectorAll(
-              ".collision-box"
-            );
-
-
-          let collided =
-            false;
-
-
-          walls.forEach(
-            function (wall) {
-
-              const box =
-                new THREE.Box3()
-                  .setFromObject(
-                    wall.object3D
-                  );
-
-
-              if (
-                worldPosition.x > box.min.x &&
-                worldPosition.x < box.max.x &&
-                worldPosition.z > box.min.z &&
-                worldPosition.z < box.max.z
-              ) {
-
-                collided = true;
-
-              }
-
-            }
-          );
-
-
-          if (collided) {
-
-            cameraPosition.copy(
-              this.lastPosition
-            );
-
-          } else {
-
-            this.lastPosition.copy(
-              cameraPosition
-            );
-
-          }
-
-        }
-
-      }
+    this.showMessage(
+      productData[product].title+
+      " added to cart!"
     );
 
-  </script>
+    this.updateProgress();
 
+  },
+
+  updateProgress:function(){
+
+    let count=0;
+
+    if(this.found.popcorn)count++;
+    if(this.found.jerky)count++;
+    if(this.found.graza)count++;
+
+    document
+      .querySelector("#progress-text")
+      .setAttribute(
+        "value",
+        count+" / 3 ITEMS FOUND"
+      );
+
+    if(count===3){
+
+      document
+        .querySelector("#status-text")
+        .setAttribute(
+          "value",
+          "SHOPPING COMPLETE!"
+        );
+
+      document
+        .querySelector("#status-text")
+        .setAttribute(
+          "color",
+          "#4E9D62"
+        );
+
+      document
+        .querySelector("#next-level")
+        .setAttribute(
+          "visible",
+          true
+        );
+
+      setTimeout(()=>{
+
+        document
+          .querySelector("#completeOverlay")
+          .style.display="flex";
+
+      },600);
+
+    }
+
+  },
+
+  showMessage:function(text){
+
+    const message=
+      document.querySelector("#message");
+
+    message.textContent=text;
+    message.style.display="block";
+
+    clearTimeout(
+      this.messageTimer
+    );
+
+    this.messageTimer=
+      setTimeout(()=>{
+
+        message.style.display="none";
+
+      },1800);
+
+  }
+
+});
+
+function openProduct(product){
+
+  const data=
+    productData[product];
+
+  if(!data)return;
+
+  currentProduct=product;
+
+  document
+    .querySelector("#productTitle")
+    .textContent=data.title;
+
+  document
+    .querySelector("#productSubtitle")
+    .textContent=data.subtitle;
+
+  document
+    .querySelector("#productDescription")
+    .textContent=data.description;
+
+  const image=
+    document.querySelector("#productImage");
+
+  if(data.image){
+
+    image.src=data.image;
+    image.style.display="block";
+
+  }else{
+
+    image.style.display="none";
+
+  }
+
+  const promoSection=
+    document.querySelector("#promoSection");
+
+  if(data.promo){
+
+    promoSection.style.display="block";
+
+    document
+      .querySelector("#promoCTA")
+      .textContent=data.cta;
+
+  }else{
+
+    promoSection.style.display="none";
+
+  }
+
+  const alreadyFound=
+    window.shoppingGame.found[product];
+
+  document
+    .querySelector("#addButton")
+    .style.display=
+      alreadyFound
+      ? "none"
+      : "block";
+
+  document
+    .querySelector("#alreadyAdded")
+    .style.display=
+      alreadyFound
+      ? "block"
+      : "none";
+
+  document
+    .querySelector("#productOverlay")
+    .style.display="flex";
+
+}
+
+function closeProduct(){
+
+  document
+    .querySelector("#productOverlay")
+    .style.display="none";
+
+  currentProduct=null;
+
+}
+
+function addCurrentProduct(){
+
+  if(!currentProduct)return;
+
+  const sound=
+    document.querySelector(
+      "#cartSound"
+    );
+
+  if(sound){
+
+    sound.currentTime=0;
+
+    sound.play().catch(()=>{
+      console.log(
+        "Audio could not play."
+      );
+    });
+
+  }
+
+  window.shoppingGame.addItem(
+    currentProduct
+  );
+
+  closeProduct();
+
+}
+
+function closeCompletePanel(){
+
+  document
+    .querySelector("#completeOverlay")
+    .style.display="none";
+
+}
+
+AFRAME.registerComponent(
+  "simple-collision",
+  {
+
+  init:function(){
+
+    this.lastPosition=
+      new THREE.Vector3();
+
+    const camera=
+      this.el.querySelector(
+        "[camera]"
+      );
+
+    if(camera){
+
+      this.lastPosition.copy(
+        camera.object3D.position
+      );
+
+    }
+
+  },
+
+  tick:function(){
+
+    const camera=
+      this.el.querySelector(
+        "[camera]"
+      );
+
+    if(!camera)return;
+
+    const cameraPosition=
+      camera.object3D.position;
+
+    const worldPosition=
+      new THREE.Vector3();
+
+    camera.object3D.getWorldPosition(
+      worldPosition
+    );
+
+    let collided=false;
+
+    document
+      .querySelectorAll(
+        ".collision-box"
+      )
+      .forEach(wall=>{
+
+        const box=
+          new THREE.Box3()
+          .setFromObject(
+            wall.object3D
+          );
+
+        if(
+          worldPosition.x>box.min.x &&
+          worldPosition.x<box.max.x &&
+          worldPosition.z>box.min.z &&
+          worldPosition.z<box.max.z
+        ){
+          collided=true;
+        }
+
+      });
+
+    if(collided){
+
+      cameraPosition.copy(
+        this.lastPosition
+      );
+
+    }else{
+
+      this.lastPosition.copy(
+        cameraPosition
+      );
+
+    }
+
+  }
+
+});
+
+</script>
 </head>
-
 
 <body>
 
+<audio
+  id="cartSound"
+  src="audio/click.mp3"
+  preload="auto">
+</audio>
 
-  <!-- =====================================================
-       SMALL MESSAGE
-  ===================================================== -->
+<div id="message"></div>
 
-  <div id="message"></div>
+<div id="productOverlay">
 
+  <div id="productCard">
 
-  <!-- =====================================================
-       PRODUCT INFORMATION
-  ===================================================== -->
+    <h1 id="productTitle">
+      Product
+    </h1>
 
-  <div id="productOverlay">
+    <div id="productSubtitle">
+    </div>
 
-    <div id="productCard">
+    <div class="product-main">
 
-      <h1 id="productTitle">
-        Product
-      </h1>
+      <img
+        id="productImage"
+        src=""
+        alt="Product">
 
+      <div class="product-copy">
 
-      <div id="productSubtitle">
-      </div>
-
-
-      <div class="product-main">
-
-        <img
-          id="productImage"
-          src=""
-          alt="Product"
-        >
-
-
-        <div>
-
-          <p id="productDescription">
-          </p>
-
-        </div>
+        <p id="productDescription">
+        </p>
 
       </div>
-
-
-      <!-- =================================================
-           POPCORN INGREDIENTS
-      ================================================= -->
-
-      <div id="ingredientSection">
-
-        <div class="divider"></div>
-
-
-        <div class="ingredientTitle">
-          Key Ingredients
-        </div>
-
-
-        <div class="ingredients">
-
-
-          <!-- COCONUT OIL -->
-
-          <div class="ingredient">
-
-            <img
-              src="image/oil.jpg"
-              alt="Coconut Oil"
-            >
-
-
-            <div>
-
-              <h3>
-                Coconut Oil
-              </h3>
-
-
-              <p>
-                Coconut oil is used to coat the popcorn
-                and contributes to its light texture
-                and subtle flavor.
-              </p>
-
-            </div>
-
-          </div>
-
-
-          <!-- PINK SALT -->
-
-          <div class="ingredient">
-
-            <img
-              src="image/pinksalt.jpg"
-              alt="Himalayan Pink Salt"
-            >
-
-
-            <div>
-
-              <h3>
-                Himalayan Pink Salt
-              </h3>
-
-
-              <p>
-                Himalayan pink salt provides the salty
-                seasoning that gives this popcorn its
-                characteristic flavor.
-              </p>
-
-            </div>
-
-          </div>
-
-
-        </div>
-
-      </div>
-
-
-      <div id="alreadyAdded">
-        ✓ ITEM ALREADY IN CART
-      </div>
-
-
-      <div class="productButtons">
-
-        <button
-          id="closeButton"
-          onclick="closeProduct()"
-        >
-          CLOSE
-        </button>
-
-
-        <button
-          id="addButton"
-          onclick="addCurrentProduct()"
-        >
-          ADD TO CART
-        </button>
-
-      </div>
-
 
     </div>
 
-  </div>
+    <div id="promoSection">
 
+      <div class="promoFeatures">
 
-  <!-- =====================================================
-       COMPLETE
-  ===================================================== -->
+        <div class="promoFeature">
 
-  <div id="completeOverlay">
+          <img
+            src="image/oil.jpg"
+            alt="Coconut Oil">
 
-    <div id="completeCard">
+          <div class="promoFeatureText">
 
-      <h1>
-        Shopping Complete!
-      </h1>
+            <h3>COCONUT OIL</h3>
 
+            <p>
+              Light & smooth
+            </p>
 
-      <p>
-        You found all three products on your shopping list.
-      </p>
+          </div>
 
+        </div>
 
-      <p>
-        The next aisle is ready.
-      </p>
+        <div class="promoFeature">
 
+          <img
+            src="image/pinksalt.jpg"
+            alt="Himalayan Pink Salt">
+
+          <div class="promoFeatureText">
+
+            <h3>
+              HIMALAYAN PINK SALT
+            </h3>
+
+            <p>
+              Simple & savory
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div id="promoCTA">
+      </div>
+
+    </div>
+
+    <div id="alreadyAdded">
+      ✓ ITEM ALREADY IN CART
+    </div>
+
+    <div class="productButtons">
 
       <button
-        id="nextButton"
-        onclick="closeCompletePanel()"
-      >
-        NEXT LEVEL — DRINKS →
+        id="closeButton"
+        onclick="closeProduct()">
+        CLOSE
+      </button>
+
+      <button
+        id="addButton"
+        onclick="addCurrentProduct()">
+        ADD TO CART
       </button>
 
     </div>
 
   </div>
 
+</div>
 
-  <!-- =====================================================
-       A-FRAME
-  ===================================================== -->
+<div id="completeOverlay">
 
-  <a-scene
-    shopping-game
-    background="color:#F4F0E8"
-  >
+  <div id="completeCard">
 
+    <h1>
+      Shopping Complete!
+    </h1>
 
-    <!-- =================================================
-         ASSETS
-    ================================================= -->
+    <p>
+      You found all three products
+      on your shopping list.
+    </p>
 
-    <a-assets>
+    <p>
+      The next aisle is ready.
+    </p>
 
-      <a-asset-item
-        id="snackModel"
-        src="snack.glb"
-      >
-      </a-asset-item>
+    <button
+      id="nextButton"
+      onclick="closeCompletePanel()">
+      NEXT LEVEL — DRINKS →
+    </button>
 
-    </a-assets>
+  </div>
 
+</div>
 
-    <!-- =================================================
-         REAL SCANNED SHELF
-    ================================================= -->
+<a-scene
+  shopping-game
+  background="color:#F4F0E8">
 
-    <a-entity
-      id="snack-model"
-      gltf-model="#snackModel"
-    >
-    </a-entity>
+  <a-assets>
 
+    <a-asset-item
+      id="snackModel"
+      src="snack.glb">
+    </a-asset-item>
 
-    <!-- =================================================
-         FLOOR
-    ================================================= -->
+  </a-assets>
+
+  <a-entity
+    id="snack-model"
+    gltf-model="#snackModel"
+    position="0 0.25 0">
+  </a-entity>
+
+  <!-- FLOOR -->
+
+  <a-plane
+    position="0 -0.04 3"
+    rotation="-90 0 0"
+    width="16"
+    height="18"
+    material="color:#DED9CF;shader:flat">
+  </a-plane>
+
+  <!-- BACK WALL -->
+
+  <a-plane
+    position="0 3 -2"
+    width="12"
+    height="6"
+    material="color:#F3EFE7;shader:flat">
+  </a-plane>
+
+  <!-- LEFT WALL -->
+
+  <a-plane
+    position="-6 3 4"
+    rotation="0 90 0"
+    width="12"
+    height="6"
+    material="color:#F1EDE5;shader:flat;side:double">
+  </a-plane>
+
+  <!-- RIGHT WALL -->
+
+  <a-plane
+    position="6 3 4"
+    rotation="0 -90 0"
+    width="12"
+    height="6"
+    material="color:#F1EDE5;shader:flat;side:double">
+  </a-plane>
+
+  <!-- CEILING -->
+
+  <a-plane
+    position="0 6 3"
+    rotation="90 0 0"
+    width="12"
+    height="12"
+    material="color:#FAF8F3;shader:flat;side:double">
+  </a-plane>
+
+  <!-- SNACKS SIGN -->
+
+  <a-plane
+    position="0 4.65 -1.88"
+    width="6.5"
+    height="1"
+    material="color:#26384D;shader:flat">
+  </a-plane>
+
+  <a-text
+    value="SNACKS"
+    position="0 4.72 -1.82"
+    align="center"
+    color="white"
+    width="8">
+  </a-text>
+
+  <a-text
+    value="EVERYDAY FAVORITES"
+    position="0 4.35 -1.81"
+    align="center"
+    color="#F4C95D"
+    width="3.5">
+  </a-text>
+
+  <!-- CEILING STRIPS -->
+
+  <a-box
+    position="-3.5 5.85 3"
+    width=".18"
+    height=".04"
+    depth="7"
+    material="color:#FFF7D6;shader:flat">
+  </a-box>
+
+  <a-box
+    position="0 5.85 3"
+    width=".18"
+    height=".04"
+    depth="7"
+    material="color:#FFF7D6;shader:flat">
+  </a-box>
+
+  <a-box
+    position="3.5 5.85 3"
+    width=".18"
+    height=".04"
+    depth="7"
+    material="color:#FFF7D6;shader:flat">
+  </a-box>
+
+  <!-- LEFT SHELF -->
+
+  <a-entity
+    position="-4.8 0 2.5">
+
+    <a-box
+      position="0 1.7 0"
+      width="1.2"
+      height="3.4"
+      depth="5.8"
+      material="color:#F1EEE7;shader:flat">
+    </a-box>
+
+    <a-box
+      position=".67 .35 0"
+      width=".85"
+      height=".10"
+      depth="5.5"
+      material="color:#41484D;shader:flat">
+    </a-box>
+
+    <a-box
+      position=".67 1.1 0"
+      width=".85"
+      height=".10"
+      depth="5.5"
+      material="color:#41484D;shader:flat">
+    </a-box>
+
+    <a-box
+      position=".67 1.85 0"
+      width=".85"
+      height=".10"
+      depth="5.5"
+      material="color:#41484D;shader:flat">
+    </a-box>
+
+    <a-box
+      position=".67 2.6 0"
+      width=".85"
+      height=".10"
+      depth="5.5"
+      material="color:#41484D;shader:flat">
+    </a-box>
+
+    <a-box position=".73 .65 -2"
+      width=".32" height=".45"
+      depth=".55" color="#D65A43">
+    </a-box>
+
+    <a-box position=".73 .65 -1"
+      width=".32" height=".45"
+      depth=".55" color="#E5BA52">
+    </a-box>
+
+    <a-box position=".73 .65 0"
+      width=".32" height=".45"
+      depth=".55" color="#61906D">
+    </a-box>
+
+    <a-box position=".73 .65 1"
+      width=".32" height=".45"
+      depth=".55" color="#C75F78">
+    </a-box>
+
+    <a-box position=".73 .65 2"
+      width=".32" height=".45"
+      depth=".55" color="#6082A1">
+    </a-box>
+
+    <a-box position=".73 1.40 -2"
+      width=".32" height=".45"
+      depth=".55" color="#6082A1">
+    </a-box>
+
+    <a-box position=".73 1.40 -1"
+      width=".32" height=".45"
+      depth=".55" color="#D65A43">
+    </a-box>
+
+    <a-box position=".73 1.40 0"
+      width=".32" height=".45"
+      depth=".55" color="#E5BA52">
+    </a-box>
+
+    <a-box position=".73 1.40 1"
+      width=".32" height=".45"
+      depth=".55" color="#61906D">
+    </a-box>
+
+    <a-box position=".73 1.40 2"
+      width=".32" height=".45"
+      depth=".55" color="#C75F78">
+    </a-box>
+
+    <a-box position=".73 2.15 -2"
+      width=".32" height=".45"
+      depth=".55" color="#E5BA52">
+    </a-box>
+
+    <a-box position=".73 2.15 -1"
+      width=".32" height=".45"
+      depth=".55" color="#61906D">
+    </a-box>
+
+    <a-box position=".73 2.15 0"
+      width=".32" height=".45"
+      depth=".55" color="#D65A43">
+    </a-box>
+
+    <a-box position=".73 2.15 1"
+      width=".32" height=".45"
+      depth=".55" color="#6082A1">
+    </a-box>
+
+    <a-box position=".73 2.15 2"
+      width=".32" height=".45"
+      depth=".55" color="#C75F78">
+    </a-box>
+
+  </a-entity>
+
+  <!-- RIGHT SHELF -->
+
+  <a-entity
+    position="4.8 0 2.5"
+    scale="-1 1 1">
+
+    <a-box
+      position="0 1.7 0"
+      width="1.2"
+      height="3.4"
+      depth="5.8"
+      material="color:#F1EEE7;shader:flat">
+    </a-box>
+
+    <a-box
+      position=".67 .35 0"
+      width=".85"
+      height=".10"
+      depth="5.5"
+      material="color:#41484D;shader:flat">
+    </a-box>
+
+    <a-box
+      position=".67 1.1 0"
+      width=".85"
+      height=".10"
+      depth="5.5"
+      material="color:#41484D;shader:flat">
+    </a-box>
+
+    <a-box
+      position=".67 1.85 0"
+      width=".85"
+      height=".10"
+      depth="5.5"
+      material="color:#41484D;shader:flat">
+    </a-box>
+
+    <a-box
+      position=".67 2.6 0"
+      width=".85"
+      height=".10"
+      depth="5.5"
+      material="color:#41484D;shader:flat">
+    </a-box>
+
+    <a-box position=".73 .65 -2"
+      width=".32" height=".45"
+      depth=".55" color="#6082A1">
+    </a-box>
+
+    <a-box position=".73 .65 -1"
+      width=".32" height=".45"
+      depth=".55" color="#D65A43">
+    </a-box>
+
+    <a-box position=".73 .65 0"
+      width=".32" height=".45"
+      depth=".55" color="#E5BA52">
+    </a-box>
+
+    <a-box position=".73 .65 1"
+      width=".32" height=".45"
+      depth=".55" color="#61906D">
+    </a-box>
+
+    <a-box position=".73 .65 2"
+      width=".32" height=".45"
+      depth=".55" color="#C75F78">
+    </a-box>
+
+    <a-box position=".73 1.40 -2"
+      width=".32" height=".45"
+      depth=".55" color="#C75F78">
+    </a-box>
+
+    <a-box position=".73 1.40 -1"
+      width=".32" height=".45"
+      depth=".55" color="#6082A1">
+    </a-box>
+
+    <a-box position=".73 1.40 0"
+      width=".32" height=".45"
+      depth=".55" color="#E5BA52">
+    </a-box>
+
+    <a-box position=".73 1.40 1"
+      width=".32" height=".45"
+      depth=".55" color="#61906D">
+    </a-box>
+
+    <a-box position=".73 1.40 2"
+      width=".32" height=".45"
+      depth=".55" color="#D65A43">
+    </a-box>
+
+    <a-box position=".73 2.15 -2"
+      width=".32" height=".45"
+      depth=".55" color="#E5BA52">
+    </a-box>
+
+    <a-box position=".73 2.15 -1"
+      width=".32" height=".45"
+      depth=".55" color="#61906D">
+    </a-box>
+
+    <a-box position=".73 2.15 0"
+      width=".32" height=".45"
+      depth=".55" color="#D65A43">
+    </a-box>
+
+    <a-box position=".73 2.15 1"
+      width=".32" height=".45"
+      depth=".55" color="#6082A1">
+    </a-box>
+
+    <a-box position=".73 2.15 2"
+      width=".32" height=".45"
+      depth=".55" color="#C75F78">
+    </a-box>
+
+  </a-entity>
+
+  <!-- SHOPPING SCREEN -->
+
+  <a-entity
+    id="shopping-screen"
+    position="-3.05 1.85 0.65"
+    rotation="0 20 0">
+
+    <a-box
+      width="1.65"
+      height="2.25"
+      depth=".10"
+      material="color:#222831;shader:flat">
+    </a-box>
 
     <a-plane
-      position="0 -0.03 3"
-      rotation="-90 0 0"
-      width="16"
-      height="18"
-      material="
-        color:#DED9CF;
-        shader:flat
-      "
-    >
+      position="0 0 .056"
+      width="1.48"
+      height="2.05"
+      material="color:#F7F4EC;shader:flat">
     </a-plane>
-
-
-    <!-- =================================================
-         BACK WALL
-    ================================================= -->
-
-    <a-plane
-      position="0 3 -2"
-      width="12"
-      height="6"
-      material="
-        color:#F3EFE7;
-        shader:flat
-      "
-    >
-    </a-plane>
-
-
-    <!-- =================================================
-         SIDE WALLS
-    ================================================= -->
-
-    <a-plane
-      position="-6 3 4"
-      rotation="0 90 0"
-      width="12"
-      height="6"
-      material="
-        color:#F1EDE5;
-        shader:flat;
-        side:double
-      "
-    >
-    </a-plane>
-
-
-    <a-plane
-      position="6 3 4"
-      rotation="0 -90 0"
-      width="12"
-      height="6"
-      material="
-        color:#F1EDE5;
-        shader:flat;
-        side:double
-      "
-    >
-    </a-plane>
-
-
-    <!-- =================================================
-         CEILING
-    ================================================= -->
-
-    <a-plane
-      position="0 6 3"
-      rotation="90 0 0"
-      width="12"
-      height="12"
-      material="
-        color:#FAF8F3;
-        shader:flat;
-        side:double
-      "
-    >
-    </a-plane>
-
-
-    <!-- =================================================
-         SNACKS SIGN
-    ================================================= -->
-
-    <a-plane
-      position="0 4.65 -1.88"
-      width="6.5"
-      height="1"
-      material="
-        color:#26384D;
-        shader:flat
-      "
-    >
-    </a-plane>
-
 
     <a-text
-      value="SNACKS"
-      position="0 4.72 -1.82"
+      value="SHOPPING&#10;CHALLENGE"
+      position="0 .75 .065"
       align="center"
-      color="white"
-      width="8"
-    >
+      color="#26384D"
+      width="2.1">
     </a-text>
-
 
     <a-text
-      value="EVERYDAY FAVORITES"
-      position="0 4.35 -1.81"
+      value="Find these 3 items"
+      position="0 .40 .065"
       align="center"
-      color="#F4C95D"
-      width="3.5"
-    >
+      color="#666666"
+      width="1.7">
     </a-text>
 
+    <a-text
+      id="popcorn-check"
+      value="O"
+      position="-.58 .12 .065"
+      color="#999"
+      width="1.5">
+    </a-text>
 
-    <!-- =================================================
-         CEILING STRIPS
-    ================================================= -->
+    <a-text
+      id="popcorn-label"
+      value="Pink Salt Popcorn"
+      position="-.38 .12 .065"
+      color="#333"
+      width="1.55">
+    </a-text>
 
-    <a-box
-      position="-3.5 5.85 3"
-      width=".18"
-      height=".04"
-      depth="7"
-      material="
-        color:#FFF7D6;
-        shader:flat
-      "
-    >
-    </a-box>
+    <a-text
+      id="jerky-check"
+      value="O"
+      position="-.58 -.12 .065"
+      color="#999"
+      width="1.5">
+    </a-text>
 
+    <a-text
+      id="jerky-label"
+      value="Beef Jerky"
+      position="-.38 -.12 .065"
+      color="#333"
+      width="1.55">
+    </a-text>
 
-    <a-box
-      position="0 5.85 3"
-      width=".18"
-      height=".04"
-      depth="7"
-      material="
-        color:#FFF7D6;
-        shader:flat
-      "
-    >
-    </a-box>
+    <a-text
+      id="graza-check"
+      value="O"
+      position="-.58 -.36 .065"
+      color="#999"
+      width="1.5">
+    </a-text>
 
+    <a-text
+      id="graza-label"
+      value="GRAZA"
+      position="-.38 -.36 .065"
+      color="#333"
+      width="1.55">
+    </a-text>
 
-    <a-box
-      position="3.5 5.85 3"
-      width=".18"
-      height=".04"
-      depth="7"
-      material="
-        color:#FFF7D6;
-        shader:flat
-      "
-    >
-    </a-box>
+    <a-text
+      id="progress-text"
+      value="0 / 3 ITEMS FOUND"
+      position="0 -.68 .065"
+      align="center"
+      color="#26384D"
+      width="1.8">
+    </a-text>
 
-
-    <!-- =================================================
-         LEFT DECORATIVE SHELF
-    ================================================= -->
-
-    <a-entity
-      position="-4.8 0 2.5"
-    >
-
-      <a-box
-        position="0 1.7 0"
-        width="1.2"
-        height="3.4"
-        depth="5.8"
-        material="
-          color:#F1EEE7;
-          shader:flat
-        "
-      >
-      </a-box>
-
-
-      <a-box
-        position=".67 .35 0"
-        width=".85"
-        height=".10"
-        depth="5.5"
-        material="color:#41484D;shader:flat"
-      >
-      </a-box>
-
-      <a-box
-        position=".67 1.1 0"
-        width=".85"
-        height=".10"
-        depth="5.5"
-        material="color:#41484D;shader:flat"
-      >
-      </a-box>
-
-      <a-box
-        position=".67 1.85 0"
-        width=".85"
-        height=".10"
-        depth="5.5"
-        material="color:#41484D;shader:flat"
-      >
-      </a-box>
-
-      <a-box
-        position=".67 2.6 0"
-        width=".85"
-        height=".10"
-        depth="5.5"
-        material="color:#41484D;shader:flat"
-      >
-      </a-box>
-
-
-      <a-box position=".73 .65 -2" width=".32" height=".45" depth=".55" color="#D65A43"></a-box>
-      <a-box position=".73 .65 -1" width=".32" height=".45" depth=".55" color="#E5BA52"></a-box>
-      <a-box position=".73 .65 0" width=".32" height=".45" depth=".55" color="#61906D"></a-box>
-      <a-box position=".73 .65 1" width=".32" height=".45" depth=".55" color="#C75F78"></a-box>
-      <a-box position=".73 .65 2" width=".32" height=".45" depth=".55" color="#6082A1"></a-box>
-
-
-      <a-box position=".73 1.40 -2" width=".32" height=".45" depth=".55" color="#6082A1"></a-box>
-      <a-box position=".73 1.40 -1" width=".32" height=".45" depth=".55" color="#D65A43"></a-box>
-      <a-box position=".73 1.40 0" width=".32" height=".45" depth=".55" color="#E5BA52"></a-box>
-      <a-box position=".73 1.40 1" width=".32" height=".45" depth=".55" color="#61906D"></a-box>
-      <a-box position=".73 1.40 2" width=".32" height=".45" depth=".55" color="#C75F78"></a-box>
-
-
-      <a-box position=".73 2.15 -2" width=".32" height=".45" depth=".55" color="#E5BA52"></a-box>
-      <a-box position=".73 2.15 -1" width=".32" height=".45" depth=".55" color="#61906D"></a-box>
-      <a-box position=".73 2.15 0" width=".32" height=".45" depth=".55" color="#D65A43"></a-box>
-      <a-box position=".73 2.15 1" width=".32" height=".45" depth=".55" color="#6082A1"></a-box>
-      <a-box position=".73 2.15 2" width=".32" height=".45" depth=".55" color="#C75F78"></a-box>
-
-    </a-entity>
-
-
-    <!-- =================================================
-         RIGHT DECORATIVE SHELF
-    ================================================= -->
+    <a-text
+      id="status-text"
+      value="START SHOPPING"
+      position="0 -.87 .065"
+      align="center"
+      color="#888"
+      width="1.5">
+    </a-text>
 
     <a-entity
-      position="4.8 0 2.5"
-      scale="-1 1 1"
-    >
-
-      <a-box
-        position="0 1.7 0"
-        width="1.2"
-        height="3.4"
-        depth="5.8"
-        material="
-          color:#F1EEE7;
-          shader:flat
-        "
-      >
-      </a-box>
-
-
-      <a-box position=".67 .35 0" width=".85" height=".10" depth="5.5" material="color:#41484D;shader:flat"></a-box>
-      <a-box position=".67 1.1 0" width=".85" height=".10" depth="5.5" material="color:#41484D;shader:flat"></a-box>
-      <a-box position=".67 1.85 0" width=".85" height=".10" depth="5.5" material="color:#41484D;shader:flat"></a-box>
-      <a-box position=".67 2.6 0" width=".85" height=".10" depth="5.5" material="color:#41484D;shader:flat"></a-box>
-
-
-      <a-box position=".73 .65 -2" width=".32" height=".45" depth=".55" color="#6082A1"></a-box>
-      <a-box position=".73 .65 -1" width=".32" height=".45" depth=".55" color="#D65A43"></a-box>
-      <a-box position=".73 .65 0" width=".32" height=".45" depth=".55" color="#E5BA52"></a-box>
-      <a-box position=".73 .65 1" width=".32" height=".45" depth=".55" color="#61906D"></a-box>
-      <a-box position=".73 .65 2" width=".32" height=".45" depth=".55" color="#C75F78"></a-box>
-
-
-      <a-box position=".73 1.40 -2" width=".32" height=".45" depth=".55" color="#C75F78"></a-box>
-      <a-box position=".73 1.40 -1" width=".32" height=".45" depth=".55" color="#6082A1"></a-box>
-      <a-box position=".73 1.40 0" width=".32" height=".45" depth=".55" color="#E5BA52"></a-box>
-      <a-box position=".73 1.40 1" width=".32" height=".45" depth=".55" color="#61906D"></a-box>
-      <a-box position=".73 1.40 2" width=".32" height=".45" depth=".55" color="#D65A43"></a-box>
-
-
-      <a-box position=".73 2.15 -2" width=".32" height=".45" depth=".55" color="#E5BA52"></a-box>
-      <a-box position=".73 2.15 -1" width=".32" height=".45" depth=".55" color="#61906D"></a-box>
-      <a-box position=".73 2.15 0" width=".32" height=".45" depth=".55" color="#D65A43"></a-box>
-      <a-box position=".73 2.15 1" width=".32" height=".45" depth=".55" color="#6082A1"></a-box>
-      <a-box position=".73 2.15 2" width=".32" height=".45" depth=".55" color="#C75F78"></a-box>
-
-    </a-entity>
-
-
-    <!-- =================================================
-         SHOPPING CHALLENGE SCREEN
-    ================================================= -->
-
-    <a-entity
-      id="shopping-screen"
-      position="-2.65 1.85 0.25"
-      rotation="0 18 0"
-    >
-
-
-      <!-- FRAME -->
-
-      <a-box
-        width="1.65"
-        height="2.25"
-        depth=".10"
-        material="
-          color:#222831;
-          shader:flat
-        "
-      >
-      </a-box>
-
-
-      <!-- SCREEN -->
+      id="next-level"
+      visible="false">
 
       <a-plane
-        position="0 0 .056"
-        width="1.48"
-        height="2.05"
-        material="
-          color:#F7F4EC;
-          shader:flat
-        "
-      >
+        position="0 -1.05 .07"
+        width="1.15"
+        height=".22"
+        material="color:#26384D;shader:flat">
       </a-plane>
 
-
-      <!-- TITLE -->
-
       <a-text
-        value="SHOPPING\nCHALLENGE"
-        position="0 .75 .065"
+        value="NEXT LEVEL >"
+        position="0 -1.05 .08"
         align="center"
-        color="#26384D"
-        width="2.1"
-      >
+        color="white"
+        width="1.45">
       </a-text>
-
-
-      <a-text
-        value="Find these 3 items"
-        position="0 .40 .065"
-        align="center"
-        color="#666666"
-        width="1.7"
-      >
-      </a-text>
-
-
-      <!-- =================================================
-           POPCORN
-      ================================================= -->
-
-      <a-text
-        id="popcorn-check"
-        value="O"
-        position="-.58 .12 .065"
-        color="#999"
-        width="1.5"
-      >
-      </a-text>
-
-
-      <a-text
-        id="popcorn-label"
-        value="Pink Salt Popcorn"
-        position="-.38 .12 .065"
-        color="#333"
-        width="1.55"
-      >
-      </a-text>
-
-
-      <!-- =================================================
-           BEEF JERKY
-      ================================================= -->
-
-      <a-text
-        id="jerky-check"
-        value="O"
-        position="-.58 -.12 .065"
-        color="#999"
-        width="1.5"
-      >
-      </a-text>
-
-
-      <a-text
-        id="jerky-label"
-        value="Beef Jerky"
-        position="-.38 -.12 .065"
-        color="#333"
-        width="1.55"
-      >
-      </a-text>
-
-
-      <!-- =================================================
-           GRAZA
-      ================================================= -->
-
-      <a-text
-        id="graza-check"
-        value="O"
-        position="-.58 -.36 .065"
-        color="#999"
-        width="1.5"
-      >
-      </a-text>
-
-
-      <a-text
-        id="graza-label"
-        value="GRAZA"
-        position="-.38 -.36 .065"
-        color="#333"
-        width="1.55"
-      >
-      </a-text>
-
-
-      <!-- =================================================
-           PROGRESS
-      ================================================= -->
-
-      <a-text
-        id="progress-text"
-        value="0 / 3 ITEMS FOUND"
-        position="0 -.68 .065"
-        align="center"
-        color="#26384D"
-        width="1.8"
-      >
-      </a-text>
-
-
-      <a-text
-        id="status-text"
-        value="START SHOPPING"
-        position="0 -.87 .065"
-        align="center"
-        color="#888"
-        width="1.5"
-      >
-      </a-text>
-
-
-      <!-- =================================================
-           NEXT LEVEL
-      ================================================= -->
-
-      <a-entity
-        id="next-level"
-        visible="false"
-      >
-
-        <a-plane
-          position="0 -1.05 .07"
-          width="1.15"
-          height=".22"
-          material="
-            color:#26384D;
-            shader:flat
-          "
-        >
-        </a-plane>
-
-
-        <a-text
-          value="NEXT LEVEL >"
-          position="0 -1.05 .08"
-          align="center"
-          color="white"
-          width="1.45"
-        >
-        </a-text>
-
-      </a-entity>
-
 
     </a-entity>
 
+  </a-entity>
 
-    <!-- =================================================
-         COLLISION
-    ================================================= -->
+  <!-- COLLISION -->
 
-    <a-box
-      class="collision-box"
-      position="0 1.8 .8"
-      width="3.2"
-      height="2.2"
-      depth=".15"
-      opacity="0"
-    >
-    </a-box>
+  <a-box
+    class="collision-box"
+    position="0 1.8 .8"
+    width="3.2"
+    height="2.2"
+    depth=".15"
+    opacity="0">
+  </a-box>
 
+  <a-box
+    class="collision-box"
+    position="-1.7 1.2 4"
+    width=".15"
+    height="2.2"
+    depth="12"
+    opacity="0">
+  </a-box>
 
-    <a-box
-      class="collision-box"
-      position="-1.7 1.2 4"
-      width=".15"
-      height="2.2"
-      depth="12"
-      opacity="0"
-    >
-    </a-box>
+  <a-box
+    class="collision-box"
+    position="1.7 1.2 4"
+    width=".15"
+    height="2.2"
+    depth="12"
+    opacity="0">
+  </a-box>
 
+  <!-- PLAYER -->
 
-    <a-box
-      class="collision-box"
-      position="1.7 1.2 4"
-      width=".15"
-      height="2.2"
-      depth="12"
-      opacity="0"
-    >
-    </a-box>
+  <a-entity
+    id="player"
+    position="0 0 5"
+    simple-collision>
 
+    <a-camera
+      id="main-camera"
+      position="0 1.6 0"
+      wasd-controls="acceleration:10">
+    </a-camera>
 
-    <!-- =================================================
-         PLAYER
-    ================================================= -->
+  </a-entity>
 
-    <a-entity
-      id="player"
-      position="0 0 5"
-      simple-collision
-    >
-
-      <a-camera
-        id="main-camera"
-        position="0 1.6 0"
-        wasd-controls="acceleration:10"
-      >
-      </a-camera>
-
-    </a-entity>
-
-
-  </a-scene>
+</a-scene>
 
 </body>
 </html>
