@@ -2,1454 +2,554 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Snack Shopping Challenge</title>
+<title>Supermarket Shopping Experience</title>
 <script src="https://aframe.io/releases/1.8.0/aframe.min.js"></script>
 
 <style>
-body{
-  margin:0;
-  overflow:hidden;
-  font-family:Arial,sans-serif;
-}
-
-#productOverlay{
-  display:none;
-  position:fixed;
-  inset:0;
-  z-index:10000;
-  background:rgba(0,0,0,.68);
-  align-items:center;
-  justify-content:center;
-}
-
-#productCard{
-  width:min(820px,90vw);
-  max-height:90vh;
-  overflow-y:auto;
-  box-sizing:border-box;
-  background:#F7F2E8;
-  color:#26384D;
-  padding:25px 32px;
-  border-radius:15px;
-  border:4px solid #26384D;
-}
-
-#productTitle{
-  text-align:center;
-  margin:0 0 5px;
-  font-size:27px;
-}
-
-#productSubtitle{
-  text-align:center;
-  color:#C95F42;
-  font-size:20px;
-  font-weight:bold;
-  letter-spacing:1px;
-  margin-bottom:18px;
-}
-
-.product-main{
-  display:flex;
-  gap:28px;
-  align-items:center;
-}
-
-#productImage{
-  width:280px;
-  height:210px;
-  object-fit:cover;
-  border-radius:10px;
-  background:white;
-}
-
-.product-copy{
-  flex:1;
-}
-
-#productDescription{
-  color:#4E5560;
-  line-height:1.55;
-  font-size:16px;
-  margin:0;
-}
-
-#promoSection{
-  display:none;
-}
-
-.promoFeatures{
-  display:flex;
-  gap:15px;
-  margin-top:20px;
-}
-
-.promoFeature{
-  flex:1;
-  display:flex;
-  align-items:center;
-  background:white;
-  border-radius:10px;
-  overflow:hidden;
-  min-height:105px;
-}
-
-.promoFeature img{
-  width:110px;
-  height:105px;
-  object-fit:cover;
-}
-
-.promoFeatureText{
-  padding:12px;
-}
-
-.promoFeatureText h3{
-  margin:0 0 5px;
-  color:#26384D;
-  font-size:15px;
-}
-
-.promoFeatureText p{
-  margin:0;
-  color:#777;
-  font-size:13px;
-  line-height:1.35;
-}
-
-#promoCTA{
-  text-align:center;
-  margin-top:18px;
-  color:#C95F42;
-  font-size:16px;
-  font-weight:bold;
-  letter-spacing:.5px;
-}
-
-.productButtons{
-  display:flex;
-  justify-content:center;
-  gap:15px;
-  margin-top:18px;
-}
-
-.productButtons button{
-  padding:11px 27px;
-  border:none;
-  border-radius:6px;
-  font-size:14px;
-  cursor:pointer;
-}
-
-#closeButton{
-  background:#68727C;
-  color:white;
-}
-
-#closeButton:hover{
-  background:#7D8791;
-}
-
-#addButton{
-  background:#26384D;
-  color:white;
-  font-weight:bold;
-}
-
-#addButton:hover{
-  background:#364D68;
-}
-
-#alreadyAdded{
-  display:none;
-  text-align:center;
-  margin-top:17px;
-  color:#4E9D62;
-  font-weight:bold;
-}
-
-#message{
-  display:none;
-  position:fixed;
-  left:50%;
-  bottom:35px;
-  transform:translateX(-50%);
-  z-index:9000;
-  padding:12px 22px;
-  background:rgba(25,25,25,.92);
-  color:white;
-  border-radius:7px;
-  pointer-events:none;
-}
-
-#completeOverlay{
-  display:none;
-  position:fixed;
-  inset:0;
-  z-index:11000;
-  background:rgba(0,0,0,.72);
-  align-items:center;
-  justify-content:center;
-}
-
-#completeCard{
-  width:min(500px,85vw);
-  box-sizing:border-box;
-  padding:40px;
-  background:#F7F4EC;
-  color:#26384D;
-  border-radius:15px;
-  text-align:center;
-}
-
-#completeCard h1{
-  margin-top:0;
-}
-
-#completeCard p{
-  color:#666;
-  line-height:1.6;
-}
-
-#nextButton{
-  margin-top:15px;
-  padding:13px 30px;
-  border:none;
-  border-radius:7px;
-  background:#26384D;
-  color:white;
-  font-size:16px;
-  cursor:pointer;
-}
-
-@media(max-width:700px){
-  .product-main{
-    flex-direction:column;
-  }
-
-  #productImage{
-    width:100%;
-  }
-
-  .promoFeatures{
-    flex-direction:column;
-  }
-}
+body{margin:0;overflow:hidden;font-family:Arial,sans-serif}
+#productOverlay,#completeOverlay{display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.68);align-items:center;justify-content:center}
+#completeOverlay{z-index:11000;background:rgba(0,0,0,.72)}
+#productCard{width:min(850px,90vw);max-height:90vh;overflow-y:auto;box-sizing:border-box;background:#F7F2E8;color:#26384D;padding:24px 30px;border-radius:15px;border:4px solid #26384D}
+#productTitle{text-align:center;margin:0 0 5px;font-size:27px}
+#productSubtitle{text-align:center;color:#C95F42;font-size:20px;font-weight:bold;letter-spacing:1px;margin-bottom:18px}
+.product-main{display:flex;gap:28px;align-items:center}
+#productImage{width:280px;height:210px;object-fit:cover;border-radius:10px;background:white}
+.product-copy{flex:1}
+#productDescription{color:#4E5560;line-height:1.55;font-size:16px;margin:0}
+.promoFeatures{display:flex;gap:15px;margin-top:20px}
+.promoFeature{flex:1;display:flex;align-items:center;background:white;border-radius:10px;overflow:hidden;min-height:105px}
+.promoFeature img{width:110px;height:105px;object-fit:cover}
+.promoFeatureText{padding:12px}
+.promoFeatureText h3{margin:0 0 5px;color:#26384D;font-size:14px}
+.promoFeatureText p{margin:0;color:#777;font-size:13px;line-height:1.35}
+#promoCTA{text-align:center;margin-top:18px;color:#C95F42;font-size:16px;font-weight:bold;letter-spacing:.5px}
+.productButtons{display:flex;justify-content:center;gap:15px;margin-top:18px}
+.productButtons button,#nextButton{padding:11px 27px;border:none;border-radius:6px;font-size:14px;cursor:pointer}
+#closeButton{background:#68727C;color:white}
+#addButton{background:#26384D;color:white;font-weight:bold}
+#alreadyAdded{display:none;text-align:center;margin-top:17px;color:#4E9D62;font-weight:bold}
+#message{display:none;position:fixed;left:50%;bottom:35px;transform:translateX(-50%);z-index:9000;padding:12px 22px;background:rgba(25,25,25,.92);color:white;border-radius:7px;pointer-events:none}
+#completeCard{width:min(500px,85vw);box-sizing:border-box;padding:40px;background:#F7F4EC;color:#26384D;border-radius:15px;text-align:center}
+#completeCard h1{margin-top:0}
+#completeCard p{color:#666;line-height:1.6}
+#nextButton{margin-top:15px;padding:13px 30px;background:#26384D;color:white;font-size:16px}
+@media(max-width:700px){.product-main,.promoFeatures{flex-direction:column}#productImage{width:100%}}
 </style>
 
 <script>
-
 const productData={
-
-  popcorn:{
-    title:"LesserEvil Himalayan Pink Salt Popcorn",
-    subtitle:"LIGHT, CRUNCHY & SIMPLE",
-    image:"image/popcorn2.jpg",
-    description:"A light and crunchy popcorn with coconut oil and Himalayan pink salt.",
-    promo:true,
-    cta:"TRY SOMETHING LIGHT & CRUNCHY"
-  },
-
-  jerky:{
-    title:"Beef Jerky",
-    subtitle:"A savory high-protein snack",
-    image:"",
-    description:"Beef jerky is made from seasoned cuts of beef that are dried to remove moisture. This process gives the snack its characteristic chewy texture and concentrated savory flavor.",
-    promo:false
-  },
-
-  graza:{
-    title:"GRAZA",
-    subtitle:"Olive oil in a distinctive squeeze bottle",
-    image:"",
-    description:"GRAZA is known for olive oil packaged in a squeeze bottle designed for easy use while cooking. Olive oil can be used for cooking, finishing dishes, dressings, and many other everyday foods.",
-    promo:false
-  }
-
+popcorn:{
+title:"LesserEvil Himalayan Pink Salt Popcorn",
+subtitle:"LIGHT, CRUNCHY & SIMPLE",
+image:"image/popcorn2.jpg",
+description:"A light and crunchy popcorn with coconut oil and Himalayan pink salt.",
+features:[
+{image:"image/oil.jpg",title:"COCONUT OIL",text:"Light & smooth"},
+{image:"image/pinksalt.jpg",title:"HIMALAYAN PINK SALT",text:"Simple & savory"}
+],
+cta:"TRY SOMETHING LIGHT & CRUNCHY"
+},
+jerky:{
+title:"Original Beef Jerky",
+subtitle:"BOLD, SAVORY & SATISFYING",
+image:"image/beef2.png",
+description:"A chewy and savory snack with bold original flavor, perfect for a quick bite on the go.",
+features:[
+{image:"image/beef1.png",title:"QUALITY BEEF",text:"Rich & savory"},
+{image:"image/beef.png",title:"SLOW-DRIED FLAVOR",text:"Chewy & smoky"}
+],
+cta:"GRAB A PROTEIN-PACKED SNACK"
+},
+graza:{
+title:"GRAZA Olive Oil",
+subtitle:"SQUEEZE, DRIZZLE & ENJOY",
+image:"image/graza%20chip.png",
+description:"A quick drizzle adds extra flavor to snacks, sides, and everyday favorites.",
+features:[
+{image:"image/graza%20oil.png",title:"QUALITY OLIVE OIL",text:"Better ingredients, better flavor"},
+{image:"image/potato.jpg",title:"EVERYDAY FAVORITE",text:"Perfect for snacks & meals"}
+],
+cta:"MAKE EVERY BITE BETTER"
+}
 };
 
 const productTargets={
-
-  popcorn:{
-    xMin:.40,
-    xMax:.60,
-    yMin:.36,
-    yMax:.64
-  },
-
-  jerky:{
-    xMin:.25,
-    xMax:.43,
-    yMin:.45,
-    yMax:.73
-  },
-
-  graza:{
-    xMin:.59,
-    xMax:.79,
-    yMin:.36,
-    yMax:.64
-  }
-
+popcorn:{xMin:.40,xMax:.60,yMin:.36,yMax:.64},
+jerky:{xMin:.34,xMax:.42,yMin:.46,yMax:.58},
+graza:{xMin:.66,xMax:.74,yMin:.58,yMax:.69}
 };
 
 let currentProduct=null;
 
 AFRAME.registerComponent("shopping-game",{
-
-  init:function(){
-
-    window.shoppingGame=this;
-
-    this.found={
-      popcorn:false,
-      jerky:false,
-      graza:false
-    };
-
-    this.raycaster=new THREE.Raycaster();
-    this.mouse=new THREE.Vector2();
-    this.messageTimer=null;
-
-    window.addEventListener("mousedown",event=>{
-
-      if(event.button!==0)return;
-
-      const productOverlay=
-        document.querySelector("#productOverlay");
-
-      const completeOverlay=
-        document.querySelector("#completeOverlay");
-
-      if(
-        productOverlay.style.display==="flex" ||
-        completeOverlay.style.display==="flex"
-      ){
-        return;
-      }
-
-      const camera=
-        document.querySelector("#main-camera");
-
-      const model=
-        document.querySelector("#snack-model");
-
-      if(
-        !camera ||
-        !camera.components.camera ||
-        !model
-      ){
-        return;
-      }
-
-      this.mouse.x=
-        (event.clientX/window.innerWidth)*2-1;
-
-      this.mouse.y=
-        -(event.clientY/window.innerHeight)*2+1;
-
-      this.raycaster.setFromCamera(
-        this.mouse,
-        camera.components.camera.camera
-      );
-
-      const hits=
-        this.raycaster.intersectObject(
-          model.object3D,
-          true
-        );
-
-      if(hits.length===0){
-
-        this.showMessage(
-          "Click directly on a product."
-        );
-
-        return;
-      }
-
-      const product=
-        this.findProduct(
-          hits[0].point.clone()
-        );
-
-      if(product){
-
-        openProduct(product);
-
-      }else{
-
-        this.showMessage(
-          "This item is not on your shopping list."
-        );
-
-      }
-
-    });
-
-  },
-
-  findProduct:function(worldPoint){
-
-    const model=
-      document.querySelector("#snack-model");
-
-    if(!model)return null;
-
-    const box=
-      new THREE.Box3().setFromObject(
-        model.object3D
-      );
-
-    const size=
-      new THREE.Vector3();
-
-    box.getSize(size);
-
-    if(
-      size.x<=0 ||
-      size.y<=0
-    ){
-      return null;
-    }
-
-    const normalizedX=
-      (worldPoint.x-box.min.x)/size.x;
-
-    const normalizedY=
-      (worldPoint.y-box.min.y)/size.y;
-
-    for(
-      const product in productTargets
-    ){
-
-      const area=
-        productTargets[product];
-
-      if(
-        normalizedX>=area.xMin &&
-        normalizedX<=area.xMax &&
-        normalizedY>=area.yMin &&
-        normalizedY<=area.yMax
-      ){
-        return product;
-      }
-
-    }
-
-    return null;
-
-  },
-
-  addItem:function(product){
-
-    if(
-      !product ||
-      this.found[product]
-    ){
-      return;
-    }
-
-    this.found[product]=true;
-
-    const check=
-      document.querySelector(
-        "#"+product+"-check"
-      );
-
-    const label=
-      document.querySelector(
-        "#"+product+"-label"
-      );
-
-    if(check){
-
-      check.setAttribute(
-        "value",
-        "✓"
-      );
-
-      check.setAttribute(
-        "color",
-        "#4E9D62"
-      );
-
-    }
-
-    if(label){
-
-      label.setAttribute(
-        "color",
-        "#4E9D62"
-      );
-
-    }
-
-    this.showMessage(
-      productData[product].title+
-      " added to cart!"
-    );
-
-    this.updateProgress();
-
-  },
-
-  updateProgress:function(){
-
-    let count=0;
-
-    if(this.found.popcorn)count++;
-    if(this.found.jerky)count++;
-    if(this.found.graza)count++;
-
-    document
-      .querySelector("#progress-text")
-      .setAttribute(
-        "value",
-        count+" / 3 ITEMS FOUND"
-      );
-
-    if(count===3){
-
-      document
-        .querySelector("#status-text")
-        .setAttribute(
-          "value",
-          "SHOPPING COMPLETE!"
-        );
-
-      document
-        .querySelector("#status-text")
-        .setAttribute(
-          "color",
-          "#4E9D62"
-        );
-
-      document
-        .querySelector("#next-level")
-        .setAttribute(
-          "visible",
-          true
-        );
-
-      setTimeout(()=>{
-
-        document
-          .querySelector("#completeOverlay")
-          .style.display="flex";
-
-      },600);
-
-    }
-
-  },
-
-  showMessage:function(text){
-
-    const message=
-      document.querySelector("#message");
-
-    message.textContent=text;
-    message.style.display="block";
-
-    clearTimeout(
-      this.messageTimer
-    );
-
-    this.messageTimer=
-      setTimeout(()=>{
-
-        message.style.display="none";
-
-      },1800);
-
-  }
-
+init:function(){
+window.shoppingGame=this;
+this.found={popcorn:false,jerky:false,graza:false};
+this.raycaster=new THREE.Raycaster();
+this.mouse=new THREE.Vector2();
+this.messageTimer=null;
+
+window.addEventListener("mousedown",event=>{
+if(event.button!==0)return;
+
+const productOverlay=document.querySelector("#productOverlay");
+const completeOverlay=document.querySelector("#completeOverlay");
+if(productOverlay.style.display==="flex"||completeOverlay.style.display==="flex")return;
+
+const camera=document.querySelector("#main-camera");
+const model=document.querySelector("#snack-model");
+if(!camera||!camera.components.camera||!model)return;
+
+this.mouse.x=(event.clientX/window.innerWidth)*2-1;
+this.mouse.y=-(event.clientY/window.innerHeight)*2+1;
+
+this.raycaster.setFromCamera(this.mouse,camera.components.camera.camera);
+const hits=this.raycaster.intersectObject(model.object3D,true);
+if(hits.length===0)return;
+
+const product=this.findProduct(hits[0].point.clone());
+if(product)openProduct(product);
+});
+},
+
+findProduct:function(worldPoint){
+const model=document.querySelector("#snack-model");
+if(!model)return null;
+
+const box=new THREE.Box3().setFromObject(model.object3D);
+const size=new THREE.Vector3();
+box.getSize(size);
+if(size.x<=0||size.y<=0)return null;
+
+const normalizedX=(worldPoint.x-box.min.x)/size.x;
+const normalizedY=(worldPoint.y-box.min.y)/size.y;
+
+for(const product in productTargets){
+const area=productTargets[product];
+if(normalizedX>=area.xMin&&normalizedX<=area.xMax&&normalizedY>=area.yMin&&normalizedY<=area.yMax)return product;
+}
+return null;
+},
+
+addItem:function(product){
+if(!product||this.found[product])return;
+this.found[product]=true;
+
+const check=document.querySelector("#"+product+"-check");
+const label=document.querySelector("#"+product+"-label");
+
+if(check){
+check.setAttribute("value","✓");
+check.setAttribute("color","#4E9D62");
+}
+if(label)label.setAttribute("color","#4E9D62");
+
+this.showMessage(productData[product].title+" added to cart!");
+this.updateProgress();
+},
+
+updateProgress:function(){
+let count=0;
+if(this.found.popcorn)count++;
+if(this.found.jerky)count++;
+if(this.found.graza)count++;
+
+document.querySelector("#progress-text").setAttribute("value",count+" / 3 ITEMS FOUND");
+
+if(count===3){
+const status=document.querySelector("#status-text");
+status.setAttribute("value","SHOPPING COMPLETE!");
+status.setAttribute("color","#4E9D62");
+document.querySelector("#next-level").setAttribute("visible",true);
+setTimeout(()=>document.querySelector("#completeOverlay").style.display="flex",500);
+}
+},
+
+showMessage:function(text){
+const message=document.querySelector("#message");
+message.textContent=text;
+message.style.display="block";
+clearTimeout(this.messageTimer);
+this.messageTimer=setTimeout(()=>message.style.display="none",1600);
+}
 });
 
+AFRAME.registerComponent("drink-marker",{
+schema:{effect:{type:"string"}},
+init:function(){
+this.el.addEventListener("click",()=>{
+if(this.data.effect==="bubbles"){
+createBubbleEffect(this.el);
+showDrinkMessage("Sparkling & refreshing!");
+}
+if(this.data.effect==="fruit"){
+createFruitBurst(this.el);
+showDrinkMessage("Fresh fruit flavor!");
+}
+if(this.data.effect==="glow"){
+createGlowWave(this.el);
+showDrinkMessage("Energy boost!");
+}
+});
+}
+});
+
+function showDrinkMessage(text){
+if(window.shoppingGame)window.shoppingGame.showMessage(text);
+}
+
+function createBubbleEffect(marker){
+const scene=document.querySelector("a-scene");
+const p=new THREE.Vector3();
+marker.object3D.getWorldPosition(p);
+
+for(let i=0;i<14;i++){
+const bubble=document.createElement("a-sphere");
+const x=p.x+(Math.random()-.5)*.55;
+const y=p.y+(Math.random()-.5)*.2;
+const z=p.z+.15+Math.random()*.15;
+const size=.035+Math.random()*.06;
+
+bubble.setAttribute("position",`${x} ${y} ${z}`);
+bubble.setAttribute("radius",size);
+bubble.setAttribute("material","color:#BDEBFF;shader:flat;transparent:true;opacity:.8;depthTest:false");
+bubble.setAttribute("animation__move",`property:position;to:${x} ${y+1.2+Math.random()*.7} ${z};dur:${1200+Math.random()*900};easing:easeOutQuad`);
+bubble.setAttribute("animation__fade","property:material.opacity;from:.8;to:0;dur:1800");
+scene.appendChild(bubble);
+setTimeout(()=>bubble.remove(),2200);
+}
+}
+
+function createFruitBurst(marker){
+const scene=document.querySelector("a-scene");
+const p=new THREE.Vector3();
+marker.object3D.getWorldPosition(p);
+const colors=["#FFB347","#FFD166","#FF7F50","#F4A261"];
+
+for(let i=0;i<16;i++){
+const particle=document.createElement("a-sphere");
+const angle=Math.PI*2/16*i;
+const distance=.65+Math.random()*.45;
+const endX=p.x+Math.cos(angle)*distance;
+const endY=p.y+Math.sin(angle)*distance;
+const endZ=p.z+.18;
+
+particle.setAttribute("position",`${p.x} ${p.y} ${p.z+.15}`);
+particle.setAttribute("radius",.035+Math.random()*.035);
+particle.setAttribute("material",`color:${colors[Math.floor(Math.random()*colors.length)]};shader:flat;transparent:true;opacity:1;depthTest:false`);
+particle.setAttribute("animation__move",`property:position;to:${endX} ${endY} ${endZ};dur:850;easing:easeOutQuad`);
+particle.setAttribute("animation__scale","property:scale;from:1 1 1;to:.2 .2 .2;dur:850");
+particle.setAttribute("animation__fade","property:material.opacity;from:1;to:0;dur:850");
+scene.appendChild(particle);
+setTimeout(()=>particle.remove(),1000);
+}
+}
+
+function createGlowWave(marker){
+const scene=document.querySelector("a-scene");
+const p=new THREE.Vector3();
+marker.object3D.getWorldPosition(p);
+
+for(let i=0;i<3;i++){
+setTimeout(()=>{
+const ring=document.createElement("a-ring");
+ring.setAttribute("position",`${p.x} ${p.y} ${p.z+.18}`);
+ring.setAttribute("radius-inner",".16");
+ring.setAttribute("radius-outer",".21");
+ring.setAttribute("material","color:#8DE8FF;shader:flat;transparent:true;opacity:.9;side:double;depthTest:false");
+ring.setAttribute("animation__scale","property:scale;from:.5 .5 .5;to:4 4 4;dur:1000;easing:easeOutQuad");
+ring.setAttribute("animation__fade","property:material.opacity;from:.9;to:0;dur:1000");
+scene.appendChild(ring);
+setTimeout(()=>ring.remove(),1100);
+},i*250);
+}
+}
+
 function openProduct(product){
+const data=productData[product];
+if(!data)return;
 
-  const data=
-    productData[product];
+currentProduct=product;
+document.querySelector("#productTitle").textContent=data.title;
+document.querySelector("#productSubtitle").textContent=data.subtitle;
+document.querySelector("#productDescription").textContent=data.description;
+document.querySelector("#productImage").src=data.image;
 
-  if(!data)return;
+const features=document.querySelector("#promoFeatures");
+features.innerHTML="";
 
-  currentProduct=product;
+data.features.forEach(feature=>{
+const card=document.createElement("div");
+card.className="promoFeature";
+card.innerHTML=`<img src="${feature.image}"><div class="promoFeatureText"><h3>${feature.title}</h3><p>${feature.text}</p></div>`;
+features.appendChild(card);
+});
 
-  document
-    .querySelector("#productTitle")
-    .textContent=data.title;
+document.querySelector("#promoCTA").textContent=data.cta;
 
-  document
-    .querySelector("#productSubtitle")
-    .textContent=data.subtitle;
-
-  document
-    .querySelector("#productDescription")
-    .textContent=data.description;
-
-  const image=
-    document.querySelector("#productImage");
-
-  if(data.image){
-
-    image.src=data.image;
-    image.style.display="block";
-
-  }else{
-
-    image.style.display="none";
-
-  }
-
-  const promoSection=
-    document.querySelector("#promoSection");
-
-  if(data.promo){
-
-    promoSection.style.display="block";
-
-    document
-      .querySelector("#promoCTA")
-      .textContent=data.cta;
-
-  }else{
-
-    promoSection.style.display="none";
-
-  }
-
-  const alreadyFound=
-    window.shoppingGame.found[product];
-
-  document
-    .querySelector("#addButton")
-    .style.display=
-      alreadyFound
-      ? "none"
-      : "block";
-
-  document
-    .querySelector("#alreadyAdded")
-    .style.display=
-      alreadyFound
-      ? "block"
-      : "none";
-
-  document
-    .querySelector("#productOverlay")
-    .style.display="flex";
-
+const found=window.shoppingGame.found[product];
+document.querySelector("#addButton").style.display=found?"none":"block";
+document.querySelector("#alreadyAdded").style.display=found?"block":"none";
+document.querySelector("#productOverlay").style.display="flex";
 }
 
 function closeProduct(){
-
-  document
-    .querySelector("#productOverlay")
-    .style.display="none";
-
-  currentProduct=null;
-
+document.querySelector("#productOverlay").style.display="none";
+currentProduct=null;
 }
 
 function addCurrentProduct(){
+if(!currentProduct)return;
 
-  if(!currentProduct)return;
-
-  const sound=
-    document.querySelector(
-      "#cartSound"
-    );
-
-  if(sound){
-
-    sound.currentTime=0;
-
-    sound.play().catch(()=>{
-      console.log(
-        "Audio could not play."
-      );
-    });
-
-  }
-
-  window.shoppingGame.addItem(
-    currentProduct
-  );
-
-  closeProduct();
-
+const sound=document.querySelector("#cartSound");
+if(sound){
+sound.pause();
+sound.currentTime=0;
+sound.play().catch(()=>{});
 }
 
-function closeCompletePanel(){
-
-  document
-    .querySelector("#completeOverlay")
-    .style.display="none";
-
+const product=currentProduct;
+window.shoppingGame.addItem(product);
+closeProduct();
 }
 
-AFRAME.registerComponent(
-  "simple-collision",
-  {
+function goToDrinks(){
+document.querySelector("#completeOverlay").style.display="none";
 
-  init:function(){
+const player=document.querySelector("#player");
+const camera=document.querySelector("#main-camera");
 
-    this.lastPosition=
-      new THREE.Vector3();
+if(player)player.setAttribute("position","8 0 5");
 
-    const camera=
-      this.el.querySelector(
-        "[camera]"
-      );
+if(camera){
+camera.object3D.position.set(0,1.6,0);
+camera.object3D.rotation.set(0,0,0);
+}
 
-    if(camera){
+if(window.shoppingGame)window.shoppingGame.showMessage("Explore the glowing drinks!");
+}
 
-      this.lastPosition.copy(
-        camera.object3D.position
-      );
+AFRAME.registerComponent("simple-collision",{
+init:function(){
+this.lastWorldPosition=new THREE.Vector3();
+this.ready=false;
+},
+tick:function(){
+const camera=this.el.querySelector("[camera]");
+if(!camera)return;
 
-    }
+const worldPosition=new THREE.Vector3();
+camera.object3D.getWorldPosition(worldPosition);
 
-  },
+if(!this.ready){
+this.lastWorldPosition.copy(worldPosition);
+this.ready=true;
+return;
+}
 
-  tick:function(){
+let collided=false;
 
-    const camera=
-      this.el.querySelector(
-        "[camera]"
-      );
-
-    if(!camera)return;
-
-    const cameraPosition=
-      camera.object3D.position;
-
-    const worldPosition=
-      new THREE.Vector3();
-
-    camera.object3D.getWorldPosition(
-      worldPosition
-    );
-
-    let collided=false;
-
-    document
-      .querySelectorAll(
-        ".collision-box"
-      )
-      .forEach(wall=>{
-
-        const box=
-          new THREE.Box3()
-          .setFromObject(
-            wall.object3D
-          );
-
-        if(
-          worldPosition.x>box.min.x &&
-          worldPosition.x<box.max.x &&
-          worldPosition.z>box.min.z &&
-          worldPosition.z<box.max.z
-        ){
-          collided=true;
-        }
-
-      });
-
-    if(collided){
-
-      cameraPosition.copy(
-        this.lastPosition
-      );
-
-    }else{
-
-      this.lastPosition.copy(
-        cameraPosition
-      );
-
-    }
-
-  }
-
+document.querySelectorAll(".collision-box").forEach(wall=>{
+const box=new THREE.Box3().setFromObject(wall.object3D);
+if(worldPosition.x>box.min.x&&worldPosition.x<box.max.x&&worldPosition.z>box.min.z&&worldPosition.z<box.max.z)collided=true;
 });
 
+if(collided){
+const difference=new THREE.Vector3().subVectors(this.lastWorldPosition,worldPosition);
+this.el.object3D.position.x+=difference.x;
+this.el.object3D.position.z+=difference.z;
+}else{
+this.lastWorldPosition.copy(worldPosition);
+}
+}
+});
+
+window.addEventListener("DOMContentLoaded",()=>{
+const sound=document.querySelector("#cartSound");
+if(sound)sound.load();
+});
 </script>
 </head>
 
 <body>
 
-<audio
-  id="cartSound"
-  src="audio/click.mp3"
-  preload="auto">
-</audio>
-
+<audio id="cartSound" src="audio/click.mp3" preload="auto"></audio>
 <div id="message"></div>
 
 <div id="productOverlay">
+<div id="productCard">
+<h1 id="productTitle">Product</h1>
+<div id="productSubtitle"></div>
 
-  <div id="productCard">
+<div class="product-main">
+<img id="productImage" src="" alt="Product">
+<div class="product-copy"><p id="productDescription"></p></div>
+</div>
 
-    <h1 id="productTitle">
-      Product
-    </h1>
+<div id="promoFeatures" class="promoFeatures"></div>
+<div id="promoCTA"></div>
+<div id="alreadyAdded">✓ ITEM ALREADY IN CART</div>
 
-    <div id="productSubtitle">
-    </div>
-
-    <div class="product-main">
-
-      <img
-        id="productImage"
-        src=""
-        alt="Product">
-
-      <div class="product-copy">
-
-        <p id="productDescription">
-        </p>
-
-      </div>
-
-    </div>
-
-    <div id="promoSection">
-
-      <div class="promoFeatures">
-
-        <div class="promoFeature">
-
-          <img
-            src="image/oil.jpg"
-            alt="Coconut Oil">
-
-          <div class="promoFeatureText">
-
-            <h3>COCONUT OIL</h3>
-
-            <p>
-              Light & smooth
-            </p>
-
-          </div>
-
-        </div>
-
-        <div class="promoFeature">
-
-          <img
-            src="image/pinksalt.jpg"
-            alt="Himalayan Pink Salt">
-
-          <div class="promoFeatureText">
-
-            <h3>
-              HIMALAYAN PINK SALT
-            </h3>
-
-            <p>
-              Simple & savory
-            </p>
-
-          </div>
-
-        </div>
-
-      </div>
-
-      <div id="promoCTA">
-      </div>
-
-    </div>
-
-    <div id="alreadyAdded">
-      ✓ ITEM ALREADY IN CART
-    </div>
-
-    <div class="productButtons">
-
-      <button
-        id="closeButton"
-        onclick="closeProduct()">
-        CLOSE
-      </button>
-
-      <button
-        id="addButton"
-        onclick="addCurrentProduct()">
-        ADD TO CART
-      </button>
-
-    </div>
-
-  </div>
-
+<div class="productButtons">
+<button id="closeButton" onclick="closeProduct()">CLOSE</button>
+<button id="addButton" onclick="addCurrentProduct()">ADD TO CART</button>
+</div>
+</div>
 </div>
 
 <div id="completeOverlay">
-
-  <div id="completeCard">
-
-    <h1>
-      Shopping Complete!
-    </h1>
-
-    <p>
-      You found all three products
-      on your shopping list.
-    </p>
-
-    <p>
-      The next aisle is ready.
-    </p>
-
-    <button
-      id="nextButton"
-      onclick="closeCompletePanel()">
-      NEXT LEVEL — DRINKS →
-    </button>
-
-  </div>
-
+<div id="completeCard">
+<h1>Shopping Complete!</h1>
+<p>You found all three products on your shopping list.</p>
+<p>Continue to the beverage aisle.</p>
+<button id="nextButton" onclick="goToDrinks()">NEXT LEVEL — DRINKS →</button>
+</div>
 </div>
 
-<a-scene
-  shopping-game
-  background="color:#F4F0E8">
-
-  <a-assets>
-
-    <a-asset-item
-      id="snackModel"
-      src="snack.glb">
-    </a-asset-item>
-
-  </a-assets>
-
-  <a-entity
-    id="snack-model"
-    gltf-model="#snackModel"
-    position="0 0.25 0">
-  </a-entity>
-
-  <!-- FLOOR -->
-
-  <a-plane
-    position="0 -0.04 3"
-    rotation="-90 0 0"
-    width="16"
-    height="18"
-    material="color:#DED9CF;shader:flat">
-  </a-plane>
-
-  <!-- BACK WALL -->
-
-  <a-plane
-    position="0 3 -2"
-    width="12"
-    height="6"
-    material="color:#F3EFE7;shader:flat">
-  </a-plane>
-
-  <!-- LEFT WALL -->
-
-  <a-plane
-    position="-6 3 4"
-    rotation="0 90 0"
-    width="12"
-    height="6"
-    material="color:#F1EDE5;shader:flat;side:double">
-  </a-plane>
-
-  <!-- RIGHT WALL -->
-
-  <a-plane
-    position="6 3 4"
-    rotation="0 -90 0"
-    width="12"
-    height="6"
-    material="color:#F1EDE5;shader:flat;side:double">
-  </a-plane>
-
-  <!-- CEILING -->
-
-  <a-plane
-    position="0 6 3"
-    rotation="90 0 0"
-    width="12"
-    height="12"
-    material="color:#FAF8F3;shader:flat;side:double">
-  </a-plane>
-
-  <!-- SNACKS SIGN -->
-
-  <a-plane
-    position="0 4.65 -1.88"
-    width="6.5"
-    height="1"
-    material="color:#26384D;shader:flat">
-  </a-plane>
-
-  <a-text
-    value="SNACKS"
-    position="0 4.72 -1.82"
-    align="center"
-    color="white"
-    width="8">
-  </a-text>
-
-  <a-text
-    value="EVERYDAY FAVORITES"
-    position="0 4.35 -1.81"
-    align="center"
-    color="#F4C95D"
-    width="3.5">
-  </a-text>
-
-  <!-- CEILING STRIPS -->
-
-  <a-box
-    position="-3.5 5.85 3"
-    width=".18"
-    height=".04"
-    depth="7"
-    material="color:#FFF7D6;shader:flat">
-  </a-box>
-
-  <a-box
-    position="0 5.85 3"
-    width=".18"
-    height=".04"
-    depth="7"
-    material="color:#FFF7D6;shader:flat">
-  </a-box>
-
-  <a-box
-    position="3.5 5.85 3"
-    width=".18"
-    height=".04"
-    depth="7"
-    material="color:#FFF7D6;shader:flat">
-  </a-box>
-
-  <!-- LEFT SHELF -->
-
-  <a-entity
-    position="-4.8 0 2.5">
-
-    <a-box
-      position="0 1.7 0"
-      width="1.2"
-      height="3.4"
-      depth="5.8"
-      material="color:#F1EEE7;shader:flat">
-    </a-box>
-
-    <a-box
-      position=".67 .35 0"
-      width=".85"
-      height=".10"
-      depth="5.5"
-      material="color:#41484D;shader:flat">
-    </a-box>
-
-    <a-box
-      position=".67 1.1 0"
-      width=".85"
-      height=".10"
-      depth="5.5"
-      material="color:#41484D;shader:flat">
-    </a-box>
-
-    <a-box
-      position=".67 1.85 0"
-      width=".85"
-      height=".10"
-      depth="5.5"
-      material="color:#41484D;shader:flat">
-    </a-box>
-
-    <a-box
-      position=".67 2.6 0"
-      width=".85"
-      height=".10"
-      depth="5.5"
-      material="color:#41484D;shader:flat">
-    </a-box>
-
-    <a-box position=".73 .65 -2"
-      width=".32" height=".45"
-      depth=".55" color="#D65A43">
-    </a-box>
-
-    <a-box position=".73 .65 -1"
-      width=".32" height=".45"
-      depth=".55" color="#E5BA52">
-    </a-box>
-
-    <a-box position=".73 .65 0"
-      width=".32" height=".45"
-      depth=".55" color="#61906D">
-    </a-box>
-
-    <a-box position=".73 .65 1"
-      width=".32" height=".45"
-      depth=".55" color="#C75F78">
-    </a-box>
-
-    <a-box position=".73 .65 2"
-      width=".32" height=".45"
-      depth=".55" color="#6082A1">
-    </a-box>
-
-    <a-box position=".73 1.40 -2"
-      width=".32" height=".45"
-      depth=".55" color="#6082A1">
-    </a-box>
-
-    <a-box position=".73 1.40 -1"
-      width=".32" height=".45"
-      depth=".55" color="#D65A43">
-    </a-box>
-
-    <a-box position=".73 1.40 0"
-      width=".32" height=".45"
-      depth=".55" color="#E5BA52">
-    </a-box>
-
-    <a-box position=".73 1.40 1"
-      width=".32" height=".45"
-      depth=".55" color="#61906D">
-    </a-box>
-
-    <a-box position=".73 1.40 2"
-      width=".32" height=".45"
-      depth=".55" color="#C75F78">
-    </a-box>
-
-    <a-box position=".73 2.15 -2"
-      width=".32" height=".45"
-      depth=".55" color="#E5BA52">
-    </a-box>
-
-    <a-box position=".73 2.15 -1"
-      width=".32" height=".45"
-      depth=".55" color="#61906D">
-    </a-box>
-
-    <a-box position=".73 2.15 0"
-      width=".32" height=".45"
-      depth=".55" color="#D65A43">
-    </a-box>
-
-    <a-box position=".73 2.15 1"
-      width=".32" height=".45"
-      depth=".55" color="#6082A1">
-    </a-box>
-
-    <a-box position=".73 2.15 2"
-      width=".32" height=".45"
-      depth=".55" color="#C75F78">
-    </a-box>
-
-  </a-entity>
-
-  <!-- RIGHT SHELF -->
-
-  <a-entity
-    position="4.8 0 2.5"
-    scale="-1 1 1">
-
-    <a-box
-      position="0 1.7 0"
-      width="1.2"
-      height="3.4"
-      depth="5.8"
-      material="color:#F1EEE7;shader:flat">
-    </a-box>
-
-    <a-box
-      position=".67 .35 0"
-      width=".85"
-      height=".10"
-      depth="5.5"
-      material="color:#41484D;shader:flat">
-    </a-box>
-
-    <a-box
-      position=".67 1.1 0"
-      width=".85"
-      height=".10"
-      depth="5.5"
-      material="color:#41484D;shader:flat">
-    </a-box>
-
-    <a-box
-      position=".67 1.85 0"
-      width=".85"
-      height=".10"
-      depth="5.5"
-      material="color:#41484D;shader:flat">
-    </a-box>
-
-    <a-box
-      position=".67 2.6 0"
-      width=".85"
-      height=".10"
-      depth="5.5"
-      material="color:#41484D;shader:flat">
-    </a-box>
-
-    <a-box position=".73 .65 -2"
-      width=".32" height=".45"
-      depth=".55" color="#6082A1">
-    </a-box>
-
-    <a-box position=".73 .65 -1"
-      width=".32" height=".45"
-      depth=".55" color="#D65A43">
-    </a-box>
-
-    <a-box position=".73 .65 0"
-      width=".32" height=".45"
-      depth=".55" color="#E5BA52">
-    </a-box>
-
-    <a-box position=".73 .65 1"
-      width=".32" height=".45"
-      depth=".55" color="#61906D">
-    </a-box>
-
-    <a-box position=".73 .65 2"
-      width=".32" height=".45"
-      depth=".55" color="#C75F78">
-    </a-box>
-
-    <a-box position=".73 1.40 -2"
-      width=".32" height=".45"
-      depth=".55" color="#C75F78">
-    </a-box>
-
-    <a-box position=".73 1.40 -1"
-      width=".32" height=".45"
-      depth=".55" color="#6082A1">
-    </a-box>
-
-    <a-box position=".73 1.40 0"
-      width=".32" height=".45"
-      depth=".55" color="#E5BA52">
-    </a-box>
-
-    <a-box position=".73 1.40 1"
-      width=".32" height=".45"
-      depth=".55" color="#61906D">
-    </a-box>
-
-    <a-box position=".73 1.40 2"
-      width=".32" height=".45"
-      depth=".55" color="#D65A43">
-    </a-box>
-
-    <a-box position=".73 2.15 -2"
-      width=".32" height=".45"
-      depth=".55" color="#E5BA52">
-    </a-box>
-
-    <a-box position=".73 2.15 -1"
-      width=".32" height=".45"
-      depth=".55" color="#61906D">
-    </a-box>
-
-    <a-box position=".73 2.15 0"
-      width=".32" height=".45"
-      depth=".55" color="#D65A43">
-    </a-box>
-
-    <a-box position=".73 2.15 1"
-      width=".32" height=".45"
-      depth=".55" color="#6082A1">
-    </a-box>
-
-    <a-box position=".73 2.15 2"
-      width=".32" height=".45"
-      depth=".55" color="#C75F78">
-    </a-box>
-
-  </a-entity>
-
-  <!-- SHOPPING SCREEN -->
-
-  <a-entity
-    id="shopping-screen"
-    position="-3.05 1.85 0.65"
-    rotation="0 20 0">
-
-    <a-box
-      width="1.65"
-      height="2.25"
-      depth=".10"
-      material="color:#222831;shader:flat">
-    </a-box>
-
-    <a-plane
-      position="0 0 .056"
-      width="1.48"
-      height="2.05"
-      material="color:#F7F4EC;shader:flat">
-    </a-plane>
-
-    <a-text
-      value="SHOPPING&#10;CHALLENGE"
-      position="0 .75 .065"
-      align="center"
-      color="#26384D"
-      width="2.1">
-    </a-text>
-
-    <a-text
-      value="Find these 3 items"
-      position="0 .40 .065"
-      align="center"
-      color="#666666"
-      width="1.7">
-    </a-text>
-
-    <a-text
-      id="popcorn-check"
-      value="O"
-      position="-.58 .12 .065"
-      color="#999"
-      width="1.5">
-    </a-text>
-
-    <a-text
-      id="popcorn-label"
-      value="Pink Salt Popcorn"
-      position="-.38 .12 .065"
-      color="#333"
-      width="1.55">
-    </a-text>
-
-    <a-text
-      id="jerky-check"
-      value="O"
-      position="-.58 -.12 .065"
-      color="#999"
-      width="1.5">
-    </a-text>
-
-    <a-text
-      id="jerky-label"
-      value="Beef Jerky"
-      position="-.38 -.12 .065"
-      color="#333"
-      width="1.55">
-    </a-text>
-
-    <a-text
-      id="graza-check"
-      value="O"
-      position="-.58 -.36 .065"
-      color="#999"
-      width="1.5">
-    </a-text>
-
-    <a-text
-      id="graza-label"
-      value="GRAZA"
-      position="-.38 -.36 .065"
-      color="#333"
-      width="1.55">
-    </a-text>
-
-    <a-text
-      id="progress-text"
-      value="0 / 3 ITEMS FOUND"
-      position="0 -.68 .065"
-      align="center"
-      color="#26384D"
-      width="1.8">
-    </a-text>
-
-    <a-text
-      id="status-text"
-      value="START SHOPPING"
-      position="0 -.87 .065"
-      align="center"
-      color="#888"
-      width="1.5">
-    </a-text>
-
-    <a-entity
-      id="next-level"
-      visible="false">
-
-      <a-plane
-        position="0 -1.05 .07"
-        width="1.15"
-        height=".22"
-        material="color:#26384D;shader:flat">
-      </a-plane>
-
-      <a-text
-        value="NEXT LEVEL >"
-        position="0 -1.05 .08"
-        align="center"
-        color="white"
-        width="1.45">
-      </a-text>
-
-    </a-entity>
-
-  </a-entity>
-
-  <!-- COLLISION -->
-
-  <a-box
-    class="collision-box"
-    position="0 1.8 .8"
-    width="3.2"
-    height="2.2"
-    depth=".15"
-    opacity="0">
-  </a-box>
-
-  <a-box
-    class="collision-box"
-    position="-1.7 1.2 4"
-    width=".15"
-    height="2.2"
-    depth="12"
-    opacity="0">
-  </a-box>
-
-  <a-box
-    class="collision-box"
-    position="1.7 1.2 4"
-    width=".15"
-    height="2.2"
-    depth="12"
-    opacity="0">
-  </a-box>
-
-  <!-- PLAYER -->
-
-  <a-entity
-    id="player"
-    position="0 0 5"
-    simple-collision>
-
-    <a-camera
-      id="main-camera"
-      position="0 1.6 0"
-      wasd-controls="acceleration:10">
-    </a-camera>
-
-  </a-entity>
+<a-scene shopping-game cursor="rayOrigin:mouse" raycaster="objects:.drink-click" background="color:#F4F0E8">
+
+<a-assets>
+<a-asset-item id="snackModel" src="snack.glb"></a-asset-item>
+<a-asset-item id="beverageModel" src="beverage.glb"></a-asset-item>
+</a-assets>
+
+<!-- ENVIRONMENT -->
+<a-plane position="4 -0.04 3" rotation="-90 0 0" width="20" height="12" material="color:#DED9CF;shader:flat"></a-plane>
+<a-plane position="4 3 -2" width="20" height="6" material="color:#F3EFE7;shader:flat"></a-plane>
+<a-plane position="4 6 3" rotation="90 0 0" width="20" height="12" material="color:#FAF8F3;shader:flat;side:double"></a-plane>
+<a-plane position="-6 3 3" rotation="0 90 0" width="10" height="6" material="color:#F1EDE5;shader:flat;side:double"></a-plane>
+<a-plane position="14 3 3" rotation="0 -90 0" width="10" height="6" material="color:#F1EDE5;shader:flat;side:double"></a-plane>
+
+<!-- CENTER DIVIDER -->
+<a-box class="collision-box" position="4 3 3" width=".30" height="6" depth="10" material="color:#F1EDE5;shader:flat"></a-box>
+
+<!-- SNACK AREA -->
+<a-entity id="snack-model" gltf-model="#snackModel" position="0 .25 0"></a-entity>
+
+<a-plane position="0 4.65 -1.88" width="6.5" height="1" material="color:#26384D;shader:flat"></a-plane>
+<a-text value="SNACKS" position="0 4.72 -1.82" align="center" color="white" width="8"></a-text>
+<a-text value="EVERYDAY FAVORITES" position="0 4.35 -1.81" align="center" color="#F4C95D" width="3.5"></a-text>
+
+<a-box class="collision-box" position="0 1.8 .8" width="3.4" height="3.6" depth=".5" material="transparent:true;opacity:0"></a-box>
+
+<!-- SHOPPING LIST -->
+<a-entity id="shopping-screen" position="-3.05 1.85 .55" rotation="0 18 0">
+<a-box width="1.65" height="2.25" depth=".10" material="color:#222831;shader:flat"></a-box>
+<a-plane position="0 0 .056" width="1.48" height="2.05" material="color:#F7F4EC;shader:flat"></a-plane>
+
+<a-text value="SHOPPING LIST" position="0 .75 .065" align="center" color="#26384D" width="2.1"></a-text>
+<a-text value="Find these 3 items" position="0 .40 .065" align="center" color="#666" width="1.7"></a-text>
+
+<a-text id="popcorn-check" value="O" position="-.58 .12 .065" color="#999" width="1.5"></a-text>
+<a-text id="popcorn-label" value="Pink Salt Popcorn" position="-.38 .12 .065" color="#333" width="1.55"></a-text>
+
+<a-text id="jerky-check" value="O" position="-.58 -.12 .065" color="#999" width="1.5"></a-text>
+<a-text id="jerky-label" value="Beef Jerky" position="-.38 -.12 .065" color="#333" width="1.55"></a-text>
+
+<a-text id="graza-check" value="O" position="-.58 -.36 .065" color="#999" width="1.5"></a-text>
+<a-text id="graza-label" value="GRAZA" position="-.38 -.36 .065" color="#333" width="1.55"></a-text>
+
+<a-text id="progress-text" value="0 / 3 ITEMS FOUND" position="0 -.68 .065" align="center" color="#26384D" width="1.8"></a-text>
+<a-text id="status-text" value="START SHOPPING" position="0 -.87 .065" align="center" color="#888" width="1.5"></a-text>
+
+<a-entity id="next-level" visible="false">
+<a-plane position="0 -1.05 .07" width="1.15" height=".22" material="color:#26384D;shader:flat"></a-plane>
+<a-text value="NEXT LEVEL >" position="0 -1.05 .08" align="center" color="white" width="1.45"></a-text>
+</a-entity>
+</a-entity>
+
+<!-- BEVERAGE AREA -->
+<a-entity id="beverage-model" gltf-model="#beverageModel" position="8 0 0"></a-entity>
+
+<a-plane position="8 4.65 -1.88" width="6.5" height="1" material="color:#315B54;shader:flat"></a-plane>
+<a-text value="BEVERAGES" position="8 4.72 -1.82" align="center" color="white" width="8"></a-text>
+<a-text value="REFRESH YOUR DAY" position="8 4.35 -1.81" align="center" color="#F4C95D" width="3.5"></a-text>
+
+<!-- BEVERAGE COLLISION -->
+<a-box class="collision-box" position="8 1.7 1" width="4" height="3.4" depth=".8" material="transparent:true;opacity:0"></a-box>
+
+<!-- DRINK 1 -->
+<a-entity class="drink-click" drink-marker="effect:bubbles" position="7.15 2 0.85">
+<a-ring class="drink-click" radius-inner=".15" radius-outer=".20"
+material="color:#FFE66D;shader:flat;transparent:true;opacity:.9;side:double;depthTest:false"
+animation__pulse="property:scale;from:1 1 1;to:1.28 1.28 1.28;dur:850;dir:alternate;loop:true;easing:easeInOutSine"
+animation__opacity="property:material.opacity;from:.9;to:.45;dur:850;dir:alternate;loop:true"></a-ring>
+<a-circle class="drink-click" radius=".13"
+material="color:#FFE66D;shader:flat;transparent:true;opacity:.12;side:double;depthTest:false"></a-circle>
+</a-entity>
+
+<!-- DRINK 2 -->
+<a-entity class="drink-click" drink-marker="effect:fruit" position="8 2.05 0.85">
+<a-ring class="drink-click" radius-inner=".15" radius-outer=".20"
+material="color:#FFE66D;shader:flat;transparent:true;opacity:.9;side:double;depthTest:false"
+animation__pulse="property:scale;from:1 1 1;to:1.28 1.28 1.28;dur:1000;dir:alternate;loop:true;easing:easeInOutSine"
+animation__opacity="property:material.opacity;from:.9;to:.45;dur:1000;dir:alternate;loop:true"></a-ring>
+<a-circle class="drink-click" radius=".13"
+material="color:#FFE66D;shader:flat;transparent:true;opacity:.12;side:double;depthTest:false"></a-circle>
+</a-entity>
+
+<!-- DRINK 3 -->
+<a-entity class="drink-click" drink-marker="effect:glow" position="8.9 1.45 0.85">
+<a-ring class="drink-click" radius-inner=".15" radius-outer=".20"
+material="color:#FFE66D;shader:flat;transparent:true;opacity:.9;side:double;depthTest:false"
+animation__pulse="property:scale;from:1 1 1;to:1.28 1.28 1.28;dur:1150;dir:alternate;loop:true;easing:easeInOutSine"
+animation__opacity="property:material.opacity;from:.9;to:.45;dur:1150;dir:alternate;loop:true"></a-ring>
+<a-circle class="drink-click" radius=".13"
+material="color:#FFE66D;shader:flat;transparent:true;opacity:.12;side:double;depthTest:false"></a-circle>
+</a-entity>
+
+<!-- BOUNDARIES -->
+<a-box class="collision-box" position="4 1.5 -1.85" width="20" height="3" depth=".4" material="transparent:true;opacity:0"></a-box>
+<a-box class="collision-box" position="4 1.5 8" width="20" height="3" depth=".4" material="transparent:true;opacity:0"></a-box>
+<a-box class="collision-box" position="-5.8 1.5 3" width=".4" height="3" depth="10" material="transparent:true;opacity:0"></a-box>
+<a-box class="collision-box" position="13.8 1.5 3" width=".4" height="3" depth="10" material="transparent:true;opacity:0"></a-box>
+
+<!-- LEFT DECORATIVE SHELF -->
+<a-entity position="-4.8 0 2.5">
+<a-box position="0 1.7 0" width="1.2" height="3.4" depth="5.8" material="color:#F1EEE7;shader:flat"></a-box>
+<a-box position=".67 .35 0" width=".85" height=".10" depth="5.5" material="color:#41484D;shader:flat"></a-box>
+<a-box position=".67 1.1 0" width=".85" height=".10" depth="5.5" material="color:#41484D;shader:flat"></a-box>
+<a-box position=".67 1.85 0" width=".85" height=".10" depth="5.5" material="color:#41484D;shader:flat"></a-box>
+<a-box position=".67 2.6 0" width=".85" height=".10" depth="5.5" material="color:#41484D;shader:flat"></a-box>
+<a-box position=".73 .65 -2" width=".32" height=".45" depth=".55" color="#D65A43"></a-box>
+<a-box position=".73 .65 -1" width=".32" height=".45" depth=".55" color="#E5BA52"></a-box>
+<a-box position=".73 .65 0" width=".32" height=".45" depth=".55" color="#61906D"></a-box>
+<a-box position=".73 .65 1" width=".32" height=".45" depth=".55" color="#C75F78"></a-box>
+<a-box position=".73 .65 2" width=".32" height=".45" depth=".55" color="#6082A1"></a-box>
+<a-box position=".73 1.4 -2" width=".32" height=".45" depth=".55" color="#6082A1"></a-box>
+<a-box position=".73 1.4 -1" width=".32" height=".45" depth=".55" color="#D65A43"></a-box>
+<a-box position=".73 1.4 0" width=".32" height=".45" depth=".55" color="#E5BA52"></a-box>
+<a-box position=".73 1.4 1" width=".32" height=".45" depth=".55" color="#61906D"></a-box>
+<a-box position=".73 1.4 2" width=".32" height=".45" depth=".55" color="#C75F78"></a-box>
+</a-entity>
+
+<!-- RIGHT DECORATIVE SHELF -->
+<a-entity position="12.8 0 2.5" scale="-1 1 1">
+<a-box position="0 1.7 0" width="1.2" height="3.4" depth="5.8" material="color:#F1EEE7;shader:flat"></a-box>
+<a-box position=".67 .35 0" width=".85" height=".10" depth="5.5" material="color:#41484D;shader:flat"></a-box>
+<a-box position=".67 1.1 0" width=".85" height=".10" depth="5.5" material="color:#41484D;shader:flat"></a-box>
+<a-box position=".67 1.85 0" width=".85" height=".10" depth="5.5" material="color:#41484D;shader:flat"></a-box>
+<a-box position=".67 2.6 0" width=".85" height=".10" depth="5.5" material="color:#41484D;shader:flat"></a-box>
+<a-box position=".73 .65 -2" width=".32" height=".45" depth=".55" color="#6082A1"></a-box>
+<a-box position=".73 .65 -1" width=".32" height=".45" depth=".55" color="#D65A43"></a-box>
+<a-box position=".73 .65 0" width=".32" height=".45" depth=".55" color="#E5BA52"></a-box>
+<a-box position=".73 .65 1" width=".32" height=".45" depth=".55" color="#61906D"></a-box>
+<a-box position=".73 .65 2" width=".32" height=".45" depth=".55" color="#C75F78"></a-box>
+</a-entity>
+
+<!-- CEILING STRIPS -->
+<a-box position="-3.2 5.85 3" width=".18" height=".04" depth="7" material="color:#FFF7D6;shader:flat"></a-box>
+<a-box position="0 5.85 3" width=".18" height=".04" depth="7" material="color:#FFF7D6;shader:flat"></a-box>
+<a-box position="3.2 5.85 3" width=".18" height=".04" depth="7" material="color:#FFF7D6;shader:flat"></a-box>
+<a-box position="4.8 5.85 3" width=".18" height=".04" depth="7" material="color:#FFF7D6;shader:flat"></a-box>
+<a-box position="8 5.85 3" width=".18" height=".04" depth="7" material="color:#FFF7D6;shader:flat"></a-box>
+<a-box position="11.2 5.85 3" width=".18" height=".04" depth="7" material="color:#FFF7D6;shader:flat"></a-box>
+
+<!-- PLAYER -->
+<a-entity id="player" position="0 0 5" simple-collision>
+<a-camera id="main-camera" position="0 1.6 0" wasd-controls="acceleration:10"></a-camera>
+</a-entity>
 
 </a-scene>
-
 </body>
 </html>
